@@ -1,0 +1,219 @@
+
+<h2 class="sr-only">Glosario bilingüe de términos de la escena ballroom y drag, inglés a español latinoamericano</h2>
+<style>
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;border:0.5px solid transparent}
+.cat-ballroom{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
+.cat-drag{background:#FBEAF0;color:#72243E;border-color:#ED93B1}
+.cat-slang{background:#E1F5EE;color:#085041;border-color:#5DCAA5}
+.cat-aave{background:#FAEEDA;color:#633806;border-color:#EF9F27}
+.cat-latam{background:#FAECE7;color:#712B13;border-color:#F0997B}
+.cat-sensitive{background:#FCEBEB;color:#791F1F;border-color:#F09595}
+.conf-high{background:#EAF3DE;color:#3B6D11;border-color:#97C459}
+.conf-med{background:#FAEEDA;color:#854F0B;border-color:#EF9F27}
+.conf-low{background:#FCEBEB;color:#A32D2D;border-color:#F09595}
+@media(prefers-color-scheme:dark){
+  .cat-ballroom{background:#26215C;color:#CECBF6;border-color:#534AB7}
+  .cat-drag{background:#4B1528;color:#F4C0D1;border-color:#993556}
+  .cat-slang{background:#04342C;color:#9FE1CB;border-color:#0F6E56}
+  .cat-aave{background:#412402;color:#FAC775;border-color:#854F0B}
+  .cat-latam{background:#4A1B0C;color:#F5C4B3;border-color:#993C1D}
+  .cat-sensitive{background:#501313;color:#F7C1C1;border-color:#A32D2D}
+  .conf-high{background:#173404;color:#C0DD97;border-color:#639922}
+  .conf-med{background:#412402;color:#FAC775;border-color:#854F0B}
+  .conf-low{background:#501313;color:#F7C1C1;border-color:#A32D2D}
+}
+.fbtn{font-size:12px;padding:4px 12px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-secondary);border-radius:999px;cursor:pointer}
+.fbtn.on{border-color:var(--color-border-primary);color:var(--color-text-primary);font-weight:500}
+.tcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;cursor:pointer}
+.tcard:hover{border-color:var(--color-border-secondary)}
+.tcard.exp{border-color:var(--color-border-primary)}
+.chip{display:inline-block;font-size:12px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:2px 8px;margin:2px 3px 2px 0;color:var(--color-text-primary);font-family:var(--font-mono)}
+.drow{display:flex;gap:12px;align-items:flex-start;padding:6px 0;border-top:0.5px solid var(--color-border-tertiary);font-size:13px;line-height:1.5}
+.dlbl{color:var(--color-text-secondary);min-width:90px;flex-shrink:0;font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding-top:2px}
+.aform{display:none;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.flbl{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-secondary);display:block;margin-bottom:4px}
+.fc{grid-column:1/-1}
+.flg{color:#E24B4A;font-weight:500}
+</style>
+
+<div style="padding-top:.5rem">
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+    <input type="text" id="q" placeholder="Buscar en inglés o español…" style="flex:1;min-width:160px" oninput="doFilter()">
+    <button onclick="openForm(null)"><i class="ti ti-plus" aria-hidden="true"></i> Añadir</button>
+    <button onclick="doExport()"><i class="ti ti-download" aria-hidden="true"></i> CSV</button>
+  </div>
+  <div id="cats" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px"></div>
+  <p id="stat" style="font-size:12px;color:var(--color-text-secondary);margin:0 0 1rem"></p>
+
+  <div class="aform" id="aform">
+    <p style="font-size:14px;font-weight:500;margin:0 0 12px" id="ftitle">Nuevo término</p>
+    <div class="fgrid">
+      <div><label class="flbl" for="fen">Término EN *</label><input id="fen" type="text" placeholder="ej. Serve" style="width:100%;box-sizing:border-box"></div>
+      <div><label class="flbl" for="fes">Equivalentes ES * (coma)</label><input id="fes" type="text" placeholder="ej. tirar, matar" style="width:100%;box-sizing:border-box"></div>
+      <div><label class="flbl" for="fcat">Categoría</label><select id="fcat" style="width:100%"><option value="ballroom">Ballroom</option><option value="drag">Drag Performance</option><option value="slang">Scene Slang</option><option value="aave">AAVE-Origin</option><option value="latam">Adoptado en Latam</option><option value="sensitive">Sensible ⚠</option></select></div>
+      <div><label class="flbl" for="fconf">Confianza</label><select id="fconf" style="width:100%"><option value="high">Alta ✓</option><option value="med">Media — verificar</option><option value="low">Baja — pendiente SME</option></select></div>
+      <div class="fc"><label class="flbl" for="fden">Definición EN</label><textarea id="fden" rows="2" style="width:100%;box-sizing:border-box;resize:vertical"></textarea></div>
+      <div class="fc"><label class="flbl" for="fdes">Definición ES</label><textarea id="fdes" rows="2" style="width:100%;box-sizing:border-box;resize:vertical"></textarea></div>
+      <div><label class="flbl" for="feen">Ejemplo EN</label><input id="feen" type="text" style="width:100%;box-sizing:border-box"></div>
+      <div><label class="flbl" for="fees">Ejemplo ES</label><input id="fees" type="text" style="width:100%;box-sizing:border-box"></div>
+      <div class="fc"><label class="flbl" for="fnotes">Notas de localización</label><textarea id="fnotes" rows="2" style="width:100%;box-sizing:border-box;resize:vertical" placeholder="Variaciones regionales, contexto, advertencias de uso…"></textarea></div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+      <button onclick="cancelForm()">Cancelar</button>
+      <button id="sbtn" onclick="doSave()">Guardar</button>
+    </div>
+  </div>
+
+  <div id="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px"></div>
+</div>
+
+<script>
+const CATS={ballroom:{l:'Ballroom',c:'cat-ballroom'},drag:{l:'Drag Performance',c:'cat-drag'},slang:{l:'Scene Slang',c:'cat-slang'},aave:{l:'AAVE-Origin',c:'cat-aave'},latam:{l:'Latam adoptado',c:'cat-latam'},sensitive:{l:'Sensible ⚠',c:'cat-sensitive'}};
+const CONF={high:{l:'Confianza alta',c:'conf-high'},med:{l:'Verificar',c:'conf-med'},low:{l:'Pendiente SME',c:'conf-low'}};
+const D=[
+  {id:'1',en:'Serve (a look / realness)',es:['tirar','matar','entregar'],cat:'ballroom',conf:'high',den:'To present or perform something with total confidence and excellence; to deliver a look or performance flawlessly.',des:'"Tirar" es el equivalente más natural en el rap/queer latinoamericano. "Matar" predomina en Caribe y Cono Sur.',een:"She served that look on the runway.",ees:'Mató ese look en la pasarela.',notes:'En Caribe/Cono Sur predomina "matar"; en México/Colombia "tirar". "Entregar" es más formal/teatral.'},
+  {id:'2',en:'Slay',es:['arrasar','matar','destrozar'],cat:'ballroom',conf:'high',den:'To absolutely dominate, impress, or excel at something.',des:'Dominar o impresionar de forma absoluta. Sinónimo extendido de "serve" pero con énfasis en el resultado.',een:'She slayed that performance.',ees:'Arrasó en esa actuación.',notes:'"Arrasar" es el equivalente más portable entre mercados. Evitar "matar" en algunos contextos por sensibilidad de contenido.'},
+  {id:'3',en:'Vogue / Vogueing',es:['voguear','vogue'],cat:'ballroom',conf:'high',den:'A highly stylized modern dance originating in Harlem ballroom culture, inspired by Vogue magazine poses.',des:'Estilo de baile de alta estilización originado en la cultura ballroom de Harlem. El verbo "voguear" está adoptado en Latam.',een:'They vogued all night at the ball.',ees:'Voguearon toda la noche en el ball.',notes:'"Voguear" está consolidado en comunidades queer de Latam. Mantener sin traducción en contextos ballroom específicos.'},
+  {id:'4',en:'Walk (a category)',es:['desfilar en una categoría','caminar'],cat:'ballroom',conf:'high',den:'To compete in a ballroom category by walking the runway and being judged.',des:'Competir en una categoría ballroom desfilando ante los jueces en la pasarela.',een:'She walked the Femme Queen category.',ees:'Desfiló en la categoría Femme Queen.',notes:'"Desfilar" captura la dualidad moda/competencia. "Caminar" es demasiado literal.'},
+  {id:'5',en:'House',es:['casa','house'],cat:'ballroom',conf:'high',den:'A ballroom family/collective led by a Mother and Father, providing community and mentorship.',des:'Familia/colectivo ballroom con nombre propio, liderado por una Madre y un Padre. Provee comunidad y mentoría.',een:'She belongs to the House of Xtravaganza.',ees:'Pertenece a la Casa Xtravaganza.',notes:'En comunidades ballroom latinoamericanas se usan indistintamente "casa" y "house". En textos formales, preferir "casa".'},
+  {id:'6',en:'Mother / Father (of the house)',es:['madre de la casa','padre de la casa'],cat:'ballroom',conf:'high',den:'The matriarch/patriarch of a drag house; a mentor who guides the children of the house.',des:'La matriarca/patriarca de una casa drag; figura mentora que guía y apoya a les "hijes" de la casa.',een:"She's the Mother of the House of Labeija.",ees:'Es la Madre de la Casa Labeija.',notes:'Traducción directa funciona en todos los mercados.'},
+  {id:'7',en:'Children / Kids (of the house)',es:['hijes','hijxs','hijos/as de la casa'],cat:'ballroom',conf:'med',den:"Members of a drag house mentored by the Mother/Father.",des:'Miembros de una casa drag bajo la mentoría de la Madre/Padre.',een:"She's one of the children of the house.",ees:'Es una de las hijes de la casa.',notes:'"Hijes" (lenguaje no binario) es el más apropiado en comunidades queer latinas. "Hijxs" también se usa. En mercados conservadores, usar "hijos/as de la casa".'},
+  {id:'8',en:'Legendary',es:['legendaria','icónica'],cat:'ballroom',conf:'high',den:'The highest status a ballroom figure can achieve; a title of great respect in the community.',des:'El estatus más alto en la escena ballroom; título de máximo respeto en la comunidad.',een:'Willi Ninja is legendary.',ees:'Willi Ninja es una leyenda.',notes:'"Legendaria" es traducción directa y funciona. "Icónica" es más pop/general.'},
+  {id:'9',en:'Realness',es:['realness','autenticidad','realidad'],cat:'ballroom',conf:'high',den:'A ballroom category judging how convincingly a contestant embodies a specific identity or aesthetic.',des:'Categoría ballroom que juzga qué tan convincentemente un/a participante encarna una identidad o estética específica.',een:'She won Executive Realness.',ees:'Ganó en Executive Realness.',notes:'"Realness" se mantiene sin traducir en contextos ballroom. Es término técnico del argot de la escena.'},
+  {id:'10',en:'Death drop / Dip',es:['death drop','caída dramática'],cat:'ballroom',conf:'high',den:'A dramatic move where a performer falls backward to the floor in a split-like position.',des:'Movimiento dramático en que le performer cae hacia atrás en posición de split.',een:'She ended with a death drop.',ees:'Terminó con un death drop.',notes:'"Death drop" es el término técnico; se mantiene en español. "Caída dramática" solo en descripción general.'},
+  {id:'11',en:'Clocked',es:['leída','detectada','clocked'],cat:'ballroom',conf:'high',den:'When a trans or drag performer is identified as not passing; being read as their birth gender.',des:'Cuando una performer trans o drag es identificada como no pasable; ser detectada como su género de nacimiento.',een:'She got clocked at the grocery store.',ees:'La leyeron en el supermercado.',notes:'"Leída" es el equivalente más usado en comunidades queer latinas. "Clocked" también se usa sin traducir.'},
+  {id:'12',en:'Pose',es:['pose','posar'],cat:'drag',conf:'high',den:'A deliberate, stylized body position for maximum visual impact; also used as a command.',des:'Posición corporal deliberada y estilizada para máximo impacto visual.',een:'Pose!',ees:'¡Pose!',notes:'Se mantiene sin traducir en todos los mercados. Adoptado globalmente.'},
+  {id:'13',en:'Sashay',es:['sashay'],cat:'drag',conf:'high',den:"To walk with an exaggerated, confident, swaying gait. Also: RuPaul's 'Sashay away' elimination phrase.",des:'Caminar con paso exagerado, confiado y ondulante. "Sashay away" de RuPaul es ampliamente conocido en Latam.',een:'Sashay away.',ees:'Sashay away.',notes:'"Sashay" se mantiene sin traducir. Globalmente reconocido por Drag Race.'},
+  {id:'14',en:'Lip sync',es:['lip sync','playback'],cat:'drag',conf:'high',den:'Performing a song by mouthing lyrics while the recording plays; central to drag competition.',des:'Interpretar una canción sincronizando los labios con la grabación. Elemento central del formato de competencia drag.',een:'Lip sync for your life!',ees:'¡Lip sync por tu vida!',notes:'"Lip sync" se mantiene sin traducir en contextos drag. "Playback" es la palabra en medios masivos.'},
+  {id:'15',en:'Beat (face)',es:['beat','maquillada','pintada'],cat:'drag',conf:'high',den:'To have a fully done, flawless makeup look.',des:'Estar completamente maquillada con acabado impecable.',een:'Her face is beat.',ees:'Su cara está beat / Viene toda pintada.',notes:'"Beat" como adjetivo se usa en comunidades queer latinas. Para audiencias generales, "maquillada" o "pintada".'},
+  {id:'16',en:'Gagged',es:['gaggada','flipando','en shock','con la boca abierta'],cat:'drag',conf:'med',den:'To be shocked, amazed, or left speechless by something impressive.',des:'Quedarse impactada o sin palabras ante algo impresionante.',een:'I was absolutely gagged.',ees:'Me quedé flipando. / Me dejó con la boca abierta.',notes:'"Gaggada" es un calco usado en queer Latam pero puede no ser comprensible para audiencias generales. Preferir "flipar" o "quedar en shock".'},
+  {id:'17',en:'Lewk',es:['lewk','LOOK','look'],cat:'drag',conf:'high',den:"Deliberate spelling of 'look' emphasizing it as a crafted, intentional aesthetic statement.",des:'Grafía intencional de "look" que lo enfatiza como declaración estética elaborada y deliberada.',een:'This is a lewk.',ees:'Esto es un LOOK.',notes:'"Lewk" se puede usar sin traducir para audiencias drag. En texto general, "look" en mayúsculas o con énfasis tipográfico transmite la misma intención.'},
+  {id:'18',en:'Sass',es:['descaro','actitud','canchería'],cat:'slang',conf:'high',den:'Confident, cheeky, bold attitude delivered with style and wit. Elegance with an edge.',des:'Actitud confiada, descarada y atrevida entregada con estilo e ingenio. Elegancia con filo.',een:'Serve a little sass.',ees:'Tira un poco de descaro.',notes:'"Descaro" es el equivalente más portable y preciso entre mercados. "Canchería" es muy rioplatense, no viaja bien. "Actitud" es genérico pero seguro.'},
+  {id:'19',en:'Tea',es:['el té','el chisme','el drama'],cat:'slang',conf:'high',den:"Gossip, truth, or the inside scoop. 'Spilling tea' = sharing gossip.",des:'El chisme, la verdad, la información privilegiada. Calco del argot AAVE/drag.',een:'Spill the tea!',ees:'¡Suelta el chisme! / ¡Tira el té!',notes:'"El chisme" es el equivalente más natural en Latam. "El té" se usa en comunidades queer hispanohablantes con referente drag. Ambas son válidas según la audiencia.'},
+  {id:'20',en:'Shade / Throwing shade',es:['tirar sombra','shade','tirar indirectas'],cat:'slang',conf:'high',den:'A subtle or overt insult delivered with wit and elegance.',des:'Insulto sutil o no tan sutil, entregado con ingenio y elegancia.',een:'She threw shade at her competitor.',ees:'Le tiró sombra a su rival.',notes:'"Tirar sombra" está adoptado en español coloquial latinoamericano. "Shade" se usa sin traducir en contextos queer.'},
+  {id:'21',en:'Read / Reading',es:['leer','tirar','escupir'],cat:'slang',conf:'high',den:"To call out someone's flaws in a witty, cutting way. 'The library is open' = reading session begins.",des:"Señalar los defectos de alguien de forma ingeniosa y cortante. 'Se abre la biblioteca' = comienza la sesión de lectura.",een:'She read her to filth.',ees:'La leyó hasta el fondo.',notes:'"Leer" funciona perfectamente como calco semántico en español. "La leyó" es comprensible en contextos queer latinas.'},
+  {id:'22',en:'Kiki',es:['kiki'],cat:'slang',conf:'high',den:'A small, intimate gathering for fun, gossip and laughter in the queer/ballroom community.',des:'Reunión íntima para chismear, reírse y pasarla bien en la comunidad queer/ballroom.',een:"We're having a kiki tonight.",ees:'Esta noche tenemos una kiki.',notes:'"Kiki" se mantiene sin traducir. Adoptado en comunidades queer latinoamericanas.'},
+  {id:'23',en:'Kii-kii',es:['kii-kii','risita cómplice'],cat:'slang',conf:'med',den:'A giggly, knowing laugh in the ballroom community; conspiratorial amusement.',des:'Risa cómplice o risita en la comunidad ballroom; diversión conspirativa.',een:"Just wait, I'm coming, kii-kii.",ees:'Espera, ya voy, kii-kii.',notes:'Se mantiene sin traducir en canciones con contexto ballroom. Para audiencias generales puede reemplazarse con una onomatopeya equivalente.'},
+  {id:'24',en:'Werk / Work',es:['trabajar','darlo todo','trabájalo'],cat:'slang',conf:'high',den:'An exclamation of encouragement; to perform excellently, to put in full effort.',des:'Exclamación de aliento; también: esforzarse al máximo o actuar con excelencia.',een:'Werk it!',ees:'¡Trabájalo! / ¡Dalo todo!',notes:'"Trabájalo" es la traducción más natural. "Dalo todo" en un contexto de performance.'},
+  {id:'25',en:'Yasss / Yas',es:['yas','sí reina','¡sí!'],cat:'slang',conf:'high',den:'An enthusiastic exclamation of approval, affirmation, or excitement; originated in ballroom culture.',des:'Exclamación entusiasta de aprobación o emoción; originada en la cultura ballroom.',een:'Yasss queen!',ees:'¡Yas reina! / ¡Sí, reina!',notes:'"Yas" se usa sin traducir en comunidades queer latinas. "Sí reina" es el equivalente coloquial más amplio.'},
+  {id:'26',en:'Periodt / Period',es:['periodt','y punto','y ya'],cat:'slang',conf:'high',den:'A declarative finisher emphasizing something is final and not up for debate.',des:'Expresión que cierra un enunciado enfatizando que es definitivo e inapelable.',een:"That's the best look, periodt.",ees:'Ese es el mejor look, periodt.',notes:'"Periodt" se usa sin traducir en comunidades queer latinas. Para audiencias generales, "y punto" o "y ya".'},
+  {id:'27',en:'No tea no shade',es:['sin té sin sombra','sin drama','sin ofender'],cat:'slang',conf:'med',den:'"No offense intended, no shade being thrown — just stating facts."',des:'"Sin ánimo de ofender, solo diciendo la verdad." Aviso previo de honestidad.',een:'No tea no shade, but that look was weak.',ees:'Sin drama, pero ese look estaba flojo.',notes:'"Sin té sin sombra" solo es comprensible para audiencias con referente drag. Para audiencias generales: "sin ofender" o "con todo respeto".'},
+  {id:'28',en:'Giving',es:['tirando','dando','con pinta de'],cat:'slang',conf:'med',den:"Describes the impression something/someone is projecting. 'She's giving glamour' = she's projecting glamour.",des:'Describe la impresión que proyecta algo o alguien. Uso adjetival/verbal de moda en Gen Z.',een:"She's giving main character energy.",ees:'Está tirando energía de protagonista.',notes:'"Tirando" es el equivalente más natural en español latinoamericano. En uso Gen Z hispanohablante, "dando" también se adopta directamente del inglés.'},
+  {id:'29',en:'Sickening',es:['devastador/a','brutal','de otro mundo','mortal'],cat:'aave',conf:'high',den:'Overwhelmingly impressive, stunning, or excellent. Used as high praise.',des:'Abrumadoramente impresionante, deslumbrante o excelente. Elogio máximo en contextos drag y ballroom.',een:'That look is sickening.',ees:'Ese look es brutal / devastador.',notes:'"Brutal" y "mortal" funcionan en registro coloquial latinoamericano. "Devastador/a" es más preciso y elegante.'},
+  {id:'30',en:'Face card',es:['face card','mi cara no caduca'],cat:'aave',conf:'med',den:"Gen Z/AAVE: one's facial appearance as a form of currency or power. 'Face card never declines' = timeless beauty.",des:'Argot Gen Z/AAVE: el rostro como forma de poder o moneda. "Face card congelada" = belleza que no declina.',een:"Her face card never declines.",ees:'Su face card nunca caduca.',notes:'"Face card" está siendo adoptado en español Gen Z latinoamericano. Verificar con SME de mercado joven. Alternativa: "mi cara no caduca".'},
+  {id:'31',en:'Clap back',es:['responder con todo','tirar de vuelta','devolver el golpe'],cat:'aave',conf:'high',den:'A sharp, witty comeback in response to criticism or shade.',des:'Respuesta cortante e ingeniosa ante una crítica o insulto.',een:'She clapped back at her haters.',ees:'Les respondió con todo a sus haters.',notes:'"Responder con todo" es el equivalente más portable. "Tirar de vuelta" es más argótico y cercano al original.'},
+  {id:'32',en:'Okurrr',es:['okurrr'],cat:'aave',conf:'high',den:'An emphatic acknowledgment or affirmation popularized by Cardi B; implies attitude and sass.',des:'Afirmación enfática con actitud, popularizada por Cardi B.',een:"Okurrr, she ate that.",ees:'Okurrr, se la comió.',notes:'"Okurrr" se mantiene sin traducir en todos los mercados. Internacionalmente reconocido.'},
+  {id:'33',en:'Extravaganza',es:['extravaganza','espectáculo extraordinario'],cat:'ballroom',conf:'high',den:'An over-the-top, elaborate performance or event; also a famous house name.',des:'Actuación o evento extravagante y elaborado; también nombre de una de las casas ballroom más famosas (Xtravaganza).',een:'It was a full extravaganza.',ees:'Fue una extravaganza total.',notes:'"Extravaganza" se mantiene sin traducir en contextos ballroom/drag. Para descripción general, "espectáculo extraordinario".'},
+  {id:'34',en:'Drag mother / Drag daughter',es:['madre drag','hija drag'],cat:'drag',conf:'high',den:'Mentor-mentee relationship in drag culture; the drag mother teaches and supports the drag daughter.',des:'Relación mentor-aprendiz en la cultura drag.',een:"She's my drag mother.",ees:'Es mi madre drag.',notes:'Traducción directa. Funciona en todos los mercados.'},
+  {id:'35',en:'Strut',es:['desfilar','pavonearse','caminar con actitud'],cat:'ballroom',conf:'high',den:'To walk with exaggerated confidence and style, especially on a runway.',des:'Caminar con confianza exagerada y estilo, especialmente en una pasarela.',een:'You got to strut!',ees:'¡Tienes que desfilar!',notes:'"Desfilar" captura la dualidad moda/actitud. "Pavonearse" tiene connotación más cómica/arrogante.'}
+];
+
+let terms=[],activeCat='all',q='',editId=null,expId=null;
+
+async function init(){
+  try{const r=await window.storage.get('bg_v2');if(r&&r.value){const p=JSON.parse(r.value);if(Array.isArray(p)&&p.length>0){terms=p;}else{terms=[...D];}}}catch(e){terms=[...D];}
+  renderCats();render();
+}
+async function save(){try{await window.storage.set('bg_v2',JSON.stringify(terms));}catch(e){}}
+
+function renderCats(){
+  const el=document.getElementById('cats');
+  const all=[['all','Todos ('+terms.length+')']];
+  Object.entries(CATS).forEach(([k,v])=>{const n=terms.filter(t=>t.cat===k).length;if(n>0)all.push([k,v.l+' ('+n+')']);});
+  el.innerHTML=all.map(([k,l])=>`<button class="fbtn${activeCat===k?' on':''}" onclick="setCat('${k}')">${l}</button>`).join('');
+}
+function setCat(c){activeCat=c;renderCats();render();}
+function doFilter(){q=document.getElementById('q').value.toLowerCase();render();}
+
+function render(){
+  const filtered=terms.filter(t=>{
+    const mc=activeCat==='all'||t.cat===activeCat;
+    const mq=!q||t.en.toLowerCase().includes(q)||t.es.some(e=>e.toLowerCase().includes(q))||(t.des&&t.des.toLowerCase().includes(q))||(t.den&&t.den.toLowerCase().includes(q))||(t.notes&&t.notes.toLowerCase().includes(q));
+    return mc&&mq;
+  });
+  document.getElementById('stat').textContent=filtered.length+' término'+(filtered.length!==1?'s':'')+' · Clic en una tarjeta para expandir';
+  const g=document.getElementById('grid');
+  if(!filtered.length){g.innerHTML='<p style="color:var(--color-text-secondary);font-size:14px;grid-column:1/-1">No se encontraron términos.</p>';return;}
+  g.innerHTML=filtered.map(t=>{
+    const cat=CATS[t.cat]||{l:t.cat,c:'cat-slang'};
+    const conf=CONF[t.conf]||CONF.med;
+    const isExp=expId===t.id;
+    const isSen=t.cat==='sensitive';
+    return`<div class="tcard${isExp?' exp':''}" onclick="toggleExp('${t.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px">
+        <div style="font-size:15px;font-weight:500;color:var(--color-text-primary);line-height:1.3">${isSen?'<span class="flg">** </span>':''}${t.en}</div>
+        <span class="badge ${cat.c}" style="flex-shrink:0">${cat.l}</span>
+      </div>
+      <div style="margin-bottom:8px">${t.es.map(e=>`<span class="chip">${e}</span>`).join('')}</div>
+      <div style="font-size:12px;color:var(--color-text-secondary);line-height:1.5">${t.des?(t.des.length>90?t.des.slice(0,90)+'…':t.des):''}</div>
+      ${isExp?renderExp(t):''}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:0.5px solid var(--color-border-tertiary)">
+        <span class="badge ${conf.c}" style="font-size:10px">${conf.l}</span>
+        <div style="display:flex;gap:6px" onclick="event.stopPropagation()">
+          <button style="font-size:12px;padding:2px 8px" aria-label="Editar" onclick="openForm('${t.id}')"><i class="ti ti-edit" aria-hidden="true"></i></button>
+          <button style="font-size:12px;padding:2px 8px" aria-label="Eliminar" onclick="delTerm('${t.id}')"><i class="ti ti-trash" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderExp(t){
+  const rows=[];
+  if(t.den)rows.push(['Def. EN',t.den]);
+  if(t.des)rows.push(['Def. ES',t.des]);
+  if(t.een)rows.push(['Ej. EN',`<em>${t.een}</em>`]);
+  if(t.ees)rows.push(['Ej. ES',`<em>${t.ees}</em>`]);
+  if(t.notes)rows.push(['Notas',t.notes]);
+  return`<div style="margin-top:10px" onclick="event.stopPropagation()">${rows.map(([l,v])=>`<div class="drow"><span class="dlbl">${l}</span><span style="color:var(--color-text-primary)">${v}</span></div>`).join('')}</div>`;
+}
+
+function toggleExp(id){expId=expId===id?null:id;render();}
+
+function openForm(id){
+  editId=id;
+  const t=id?terms.find(x=>x.id===id):null;
+  document.getElementById('ftitle').textContent=t?'Editar: '+t.en:'Nuevo término';
+  document.getElementById('sbtn').textContent=t?'Actualizar':'Guardar';
+  document.getElementById('fen').value=t?t.en:'';
+  document.getElementById('fes').value=t?t.es.join(', '):'';
+  document.getElementById('fcat').value=t?t.cat:'ballroom';
+  document.getElementById('fconf').value=t?t.conf:'high';
+  document.getElementById('fden').value=t?(t.den||''):'';
+  document.getElementById('fdes').value=t?(t.des||''):'';
+  document.getElementById('feen').value=t?(t.een||''):'';
+  document.getElementById('fees').value=t?(t.ees||''):'';
+  document.getElementById('fnotes').value=t?(t.notes||''):'';
+  const f=document.getElementById('aform');
+  f.style.display='block';
+  setTimeout(()=>f.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  document.getElementById('fen').focus();
+}
+function cancelForm(){document.getElementById('aform').style.display='none';editId=null;}
+
+async function doSave(){
+  const en=document.getElementById('fen').value.trim();
+  const esR=document.getElementById('fes').value.trim();
+  if(!en||!esR){alert('El término EN y equivalentes ES son obligatorios.');return;}
+  const td={id:editId||Date.now().toString(),en,es:esR.split(',').map(s=>s.trim()).filter(Boolean),cat:document.getElementById('fcat').value,conf:document.getElementById('fconf').value,den:document.getElementById('fden').value.trim(),des:document.getElementById('fdes').value.trim(),een:document.getElementById('feen').value.trim(),ees:document.getElementById('fees').value.trim(),notes:document.getElementById('fnotes').value.trim()};
+  if(editId){const i=terms.findIndex(x=>x.id===editId);if(i>=0)terms[i]=td;}else{terms.push(td);}
+  await save();cancelForm();renderCats();render();
+}
+
+async function delTerm(id){
+  if(!confirm('¿Eliminar este término?'))return;
+  terms=terms.filter(x=>x.id!==id);
+  await save();renderCats();render();
+}
+
+function doExport(){
+  const h=['EN Term','ES Equivalents','Category','Confidence','Def EN','Def ES','Example EN','Example ES','Notes'];
+  const rows=terms.map(t=>[t.en,t.es.join(' / '),CATS[t.cat]?.l||t.cat,CONF[t.conf]?.l||t.conf,t.den||'',t.des||'',t.een||'',t.ees||'',t.notes||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv=[h.join(','),...rows].join('\n');
+  const b=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='glosario_ballroom_drag.csv';a.click();URL.revokeObjectURL(u);
+}
+
+init();
+</script>
