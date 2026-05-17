@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emerging Career Intelligence — 2026–2036</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #080c10; color: #e2e8f0; font-family: 'Syne', sans-serif; min-height: 100vh; padding: 20px; max-width: 800px; margin: 0 auto; }
+  .header { margin-bottom: 24px; border-bottom: 1px solid #1e2a3a; padding-bottom: 18px; }
+  .header h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #f0f6ff; line-height: 1.2; }
+  .header p { font-family: 'DM Mono', monospace; font-size: 10px; color: #4a6080; margin-top: 6px; letter-spacing: 0.5px; }
+  .filters { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 6px 14px; border-radius: 2px; border: 1px solid #1e2a3a; background: transparent; color: #4a6080; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
+  .filter-btn.active { background: #0f1f33; color: #7eb8f7; border-color: #2a4a6a; }
+  .filter-btn:hover:not(.active) { border-color: #2a4a6a; color: #8099b0; }
+  .count { font-family: 'DM Mono', monospace; font-size: 10px; color: #2a4060; margin-bottom: 14px; letter-spacing: 0.5px; }
+  .card { background: #0c1420; border: 1px solid #1a2535; border-radius: 4px; margin-bottom: 10px; overflow: hidden; transition: border-color 0.2s; }
+  .card:hover { border-color: #2a4060; }
+  .card.open { border-color: #2a5080; }
+  .card-header { padding: 16px 18px; cursor: pointer; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .card-left { flex: 1; min-width: 0; }
+  .card-title { font-size: 15px; font-weight: 700; color: #d4e8ff; line-height: 1.3; margin-bottom: 8px; }
+  .badges { display: flex; gap: 5px; flex-wrap: wrap; align-items: center; }
+  .badge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 2px; text-transform: uppercase; font-weight: 500; }
+  .badge-now { background: #0f3020; color: #4caf82; border: 1px solid #1a5035; }
+  .badge-5yr { background: #1a1a0a; color: #c4a832; border: 1px solid #3a3010; }
+  .badge-10yr { background: #1a0a20; color: #9b6fd4; border: 1px solid #3a1050; }
+  .badge-underdog { background: #200a0a; color: #e06060; border: 1px solid #5a1515; }
+  .chevron { color: #2a5080; font-size: 18px; line-height: 1; transition: transform 0.2s; flex-shrink: 0; margin-top: 2px; }
+  .card.open .chevron { transform: rotate(90deg); }
+  .card-body { display: none; padding: 0 18px 18px; border-top: 1px solid #1a2535; padding-top: 16px; }
+  .card.open .card-body { display: block; }
+  .core { font-size: 12px; color: #8099b8; line-height: 1.7; margin-bottom: 16px; font-style: italic; border-left: 2px solid #1e4060; padding-left: 12px; }
+  .section { margin-bottom: 14px; }
+  .section-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: #3a6090; margin-bottom: 7px; }
+  .section-content { font-size: 12px; color: #8099b8; line-height: 1.7; }
+  .section-content li { margin-bottom: 4px; padding-left: 14px; position: relative; list-style: none; }
+  .section-content li::before { content: '→'; position: absolute; left: 0; color: #2a5080; font-size: 10px; top: 2px; }
+  .demand-tag { font-size: 11px; color: #5a9fd4; line-height: 1.6; background: #0a1825; padding: 10px 12px; border-radius: 3px; border-left: 2px solid #1e5080; }
+  .transition-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+  .pill { font-family: 'DM Mono', monospace; font-size: 9px; padding: 3px 9px; background: #0f1e30; border: 1px solid #1e3550; border-radius: 2px; color: #4a7090; }
+  .footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid #1e2a3a; font-family: 'DM Mono', monospace; font-size: 9px; color: #2a4060; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>EMERGING CAREER INTELLIGENCE</h1>
+  <p>13 ROLES · COMPLIANCE &amp; AI GOVERNANCE · PROJECTION: 2026 / 2031 / 2036</p>
+  <p style="margin-top:4px;">SOURCE: Event notes — Lisa Bradley, Dell Technologies · EU CRA Analysis · May 5, 2026</p>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filter('all', this)">All (13)</button>
+  <button class="filter-btn" onclick="filter('now', this)">Now (4)</button>
+  <button class="filter-btn" onclick="filter('5yr', this)">5 Years (6)</button>
+  <button class="filter-btn" onclick="filter('10yr', this)">10 Years (3)</button>
+  <button class="filter-btn" onclick="filter('underdog', this)">★ Underdogs (12)</button>
+</div>
+
+<div class="count" id="count">SHOWING 13 ROLES</div>
+<div id="cards"></div>
+
+<div class="footer">
+  NOTE: These projections are based on regulatory trends, technological signals, and economic analysis as of Aug 2025 / May 2026. Not a substitute for live labor market data. Salary ranges deliberately omitted — verify via LinkedIn Salary, Glassdoor, or BLS for current figures. · Generated with Claude (Anthropic) as a learning companion tool.
+</div>
+
+<script>
+const careers = [
+  {
+    title: "SBOM Specialist",
+    horizon: "now",
+    underdog: true,
+    core: "Owns the organization's Software Bill of Materials pipeline — generation, maintenance, and compliance reporting across the full software supply chain.",
+    responsibilities: [
+      "Implement SBOM tooling (Syft, Trivy, CycloneDX generators) into CI/CD pipelines",
+      "Maintain complete component inventory with versions and lifecycle state",
+      "Cross-reference component inventory against CVE databases in real time",
+      "Produce SBOM artifacts for regulators, customers, and audit requests",
+      "Define and enforce SBOM quality standards across engineering teams"
+    ],
+    background: "Software engineering or DevOps foundation; familiarity with SPDX and CycloneDX formats; CI/CD pipeline experience; basic security literacy.",
+    transitions: ["DevOps Engineers", "Software Engineers", "Package Managers", "Build Engineers"],
+    demand: "CRA and US EO 14028 mandate SBOMs. The tooling exists — the trained people do not. Almost no formal pipeline produces this specialty yet."
+  },
+  {
+    title: "OSS Compliance Steward",
+    horizon: "now",
+    underdog: true,
+    core: "Manages an open-source project's compliance posture on behalf of — or funded by — enterprises that depend on it. The CRA legally created this role.",
+    responsibilities: [
+      "Publish and maintain SECURITY.md with triage, disclosure, and versioning policies",
+      "Auto-generate SBOMs for every release via CI/CD",
+      "Manage CVE assignment and coordinated vulnerability disclosure",
+      "Maintain clear End-of-Life documentation and support window commitments",
+      "Liaise with enterprise compliance teams without absorbing unlimited free labor"
+    ],
+    background: "Active open-source contribution history; understanding of CRA's open-source steward concept; security basics; community management skills.",
+    transitions: ["OSS Maintainers", "DevOps Engineers", "Developer Advocates", "Community Managers"],
+    demand: "CRA created the legal concept of 'open-source steward.' Enterprises need funded, accountable upstream maintainers. A paid profession is forming where none existed before."
+  },
+  {
+    title: "AI Red Teamer",
+    horizon: "now",
+    underdog: true,
+    core: "Professionally attacks AI systems to find failure modes, safety violations, and adversarial vulnerabilities — before deployment, regulatory review, or real-world harm occurs.",
+    responsibilities: [
+      "Design adversarial prompts, edge cases, and test suites targeting AI failure modes",
+      "Probe for jailbreaks, hallucinations, bias, and safety constraint violations",
+      "Test for data poisoning and model supply chain vulnerabilities",
+      "Document findings with reproducible evidence and severity ratings",
+      "Work with model teams on mitigations and re-test after patches"
+    ],
+    background: "AI/ML knowledge combined with adversarial security mindset; creative lateral thinking; overlaps with penetration testing methodology.",
+    transitions: ["Penetration Testers", "ML Engineers", "Cognitive Scientists", "Security Researchers"],
+    demand: "EU AI Act requires pre-market conformity assessment for high-risk AI. Enterprises need internal red team capability. Almost no formal training pipeline exists."
+  },
+  {
+    title: "RegTech Implementation Specialist",
+    horizon: "now",
+    underdog: true,
+    core: "Translates regulatory requirements into technical specifications and implementation roadmaps — the critical bridge between legal/compliance teams and engineering.",
+    responsibilities: [
+      "Parse new regulations (CRA, AI Act, HIPAA, DORA) into actionable technical requirements",
+      "Design compliance workflows and control architectures",
+      "Evaluate and implement RegTech tooling",
+      "Create implementation roadmaps with engineering teams",
+      "Train technical staff on compliance obligations and their technical implications"
+    ],
+    background: "Technical background plus regulatory literacy — ideally an engineering background with compliance certification, or a compliance role with deep technical exposure.",
+    transitions: ["Compliance Officers (technical)", "Engineers in regulated industries", "Paralegals with tech interest", "Policy Analysts"],
+    demand: "Regulatory complexity is outpacing the ability of pure lawyers or pure engineers to handle it alone. The hybrid is rare and structurally scarce."
+  },
+  {
+    title: "AI Governance Officer",
+    horizon: "5yr",
+    underdog: false,
+    core: "Owns the organization's AI governance framework — policies, risk classifications, human oversight mechanisms, incident response, and regulatory compliance across all AI deployments.",
+    responsibilities: [
+      "Develop and maintain enterprise-wide AI governance policies",
+      "Conduct risk classifications under EU AI Act and equivalent frameworks",
+      "Oversee human-in-the-loop implementation across AI systems",
+      "Manage AI incident response and regulatory reporting obligations",
+      "Report to board and regulators; maintain audit-ready documentation"
+    ],
+    background: "Blend of policy, ethics, law, and technical understanding. Often an evolution of existing privacy officer or compliance roles with AI-specific upskilling.",
+    transitions: ["Chief Privacy Officers", "Compliance Officers", "Policy Analysts", "AI Ethics Researchers", "Legal Counsel"],
+    demand: "EU AI Act mandates governance structures for high-risk AI. US executive orders pushing equivalent requirements. Board-level accountability for AI is now unavoidable."
+  },
+  {
+    title: "AI Auditor (Third-Party)",
+    horizon: "5yr",
+    underdog: true,
+    core: "Independently assesses AI systems for conformity with regulatory requirements, safety standards, and ethical guidelines — the AI equivalent of a financial auditor.",
+    responsibilities: [
+      "Conduct conformity assessments per EU AI Act Annex requirements",
+      "Review training data provenance, model cards, and technical documentation",
+      "Test for bias, safety failures, and performance claims",
+      "Assess human oversight mechanisms and override capability",
+      "Issue independent audit reports; maintain strict auditor independence"
+    ],
+    background: "AI/ML technical knowledge plus audit methodology plus regulatory knowledge. Will require formal credentialing as the profession matures — analogous to CPA licensure.",
+    transitions: ["AI Researchers", "Financial Auditors (retooling)", "Quality Assurance Specialists", "Regulatory Consultants"],
+    demand: "EU AI Act requires third-party conformity assessment for high-risk AI systems. There is currently no qualified auditor pool. This is a structural gap the market must fill."
+  },
+  {
+    title: "Synthetic Data Engineer",
+    horizon: "5yr",
+    underdog: true,
+    core: "Designs and generates synthetic datasets that preserve the statistical properties of real data while eliminating privacy risks — enabling AI training without exposing personal information.",
+    responsibilities: [
+      "Analyze real dataset characteristics and privacy risk profile",
+      "Select or build synthetic generation models (GANs, diffusion, statistical methods)",
+      "Validate that synthetic data preserves fidelity for downstream ML tasks",
+      "Document privacy guarantees and generation methodology",
+      "Integrate synthetic pipelines into ML development workflows"
+    ],
+    background: "ML engineering plus statistics plus working knowledge of privacy law (GDPR, HIPAA). Rare combination that commands significant salary premium.",
+    transitions: ["Data Scientists", "ML Engineers", "Statisticians", "Privacy Engineers"],
+    demand: "GDPR and emerging regulations make real personal data increasingly difficult to use for AI training. Healthcare and finance sectors especially constrained. Synthetic data is the unlock."
+  },
+  {
+    title: "Digital Product Liability Attorney",
+    horizon: "5yr",
+    underdog: true,
+    core: "Advises companies on legal exposure arising from software products under CRA and emerging product liability frameworks; represents clients when software causes harm.",
+    responsibilities: [
+      "CRA compliance counseling and risk assessment",
+      "Software supply chain contract drafting and liability allocation",
+      "Representation in regulatory investigations and civil litigation",
+      "Expert witness coordination in software liability cases",
+      "Policy advocacy as product liability law for software continues to develop"
+    ],
+    background: "JD plus deep technical understanding of software — ideally a prior career in engineering or computer science before law school.",
+    transitions: ["IP Attorneys", "Technology Attorneys", "Engineers who went to law school", "Product Liability Attorneys (retooling)"],
+    demand: "CRA is the first EU law to attach product liability to software. A new legal specialty is forming with almost no practitioners trained for it. First movers will define the field."
+  },
+  {
+    title: "Explainability Engineer",
+    horizon: "5yr",
+    underdog: true,
+    core: "Makes AI model decisions interpretable and auditable for regulators, clinicians, judges, and end users — distinct from building models; focused entirely on making them accountable.",
+    responsibilities: [
+      "Implement explainability methods (SHAP, LIME, attention visualization, counterfactuals)",
+      "Build human-readable explanation interfaces for non-technical decision-makers",
+      "Work with regulators to ensure explanations satisfy legal requirements",
+      "Validate that explanations are accurate representations of model behavior",
+      "Document explanation methodology as a compliance artifact"
+    ],
+    background: "ML engineering plus human-computer interaction plus domain expertise in the application area (medicine, finance, law). Domain expertise is often the differentiator.",
+    transitions: ["ML Engineers", "UX Researchers with technical background", "Domain Experts (doctors, lawyers) who learn ML"],
+    demand: "EU AI Act mandates human-readable explanations for high-risk AI decisions. GDPR's right to explanation is expanding. Healthcare AI regulation is making this non-negotiable."
+  },
+  {
+    title: "Technical Documentation Specialist (Compliance-Grade)",
+    horizon: "5yr",
+    underdog: true,
+    core: "Produces legally defensible, technically precise documentation for regulated software and AI products — compliance artifacts that must withstand regulatory scrutiny, not just user guides.",
+    responsibilities: [
+      "Write and maintain technical files per CRA and AI Act requirements",
+      "Document risk assessments, conformity declarations, and SBOM records",
+      "Create and maintain audit trails and change logs for regulated products",
+      "Work with legal and engineering teams to ensure technical accuracy and legal sufficiency",
+      "Develop documentation templates and standards across the organization"
+    ],
+    background: "Technical writing foundation plus regulatory knowledge plus exceptional precision. This combination is surprisingly rare and consistently undervalued — until a regulatory audit.",
+    transitions: ["Technical Writers", "Paralegals with tech background", "Quality Assurance Specialists", "Regulatory Affairs Specialists"],
+    demand: "CRA and AI Act both require extensive technical documentation as compliance artifacts. The documentation itself is audited. Generic technical writers cannot produce what regulators require."
+  },
+  {
+    title: "AI Forensics Specialist",
+    horizon: "10yr",
+    underdog: true,
+    core: "Reconstructs AI system behavior after incidents — determining what a model decided, why, what data influenced it, and who bears legal responsibility.",
+    responsibilities: [
+      "Preserve and analyze model states, inference logs, and training data provenance",
+      "Reconstruct decision pathways for specific outputs under investigation",
+      "Identify data lineage and upstream influences on model behavior",
+      "Produce forensic reports admissible in litigation and regulatory proceedings",
+      "Develop forensic methodologies as new AI architectures emerge"
+    ],
+    background: "AI/ML expertise plus forensic methodology plus legal process knowledge. Will require formal credentialing as AI incident litigation scales.",
+    transitions: ["AI Engineers", "Digital Forensics Specialists (retooling)", "Expert Witnesses in tech litigation", "AI Safety Researchers"],
+    demand: "As autonomous AI systems cause harm in regulated settings, legal and regulatory processes will require forensic reconstruction — exactly as cybercrime investigation did in the 2000s."
+  },
+  {
+    title: "Cognitive Security Specialist",
+    horizon: "10yr",
+    underdog: true,
+    core: "Protects human decision-making from AI-enabled manipulation — deepfakes, synthetic media, influence operations, and adversarial cognitive attacks at scale.",
+    responsibilities: [
+      "Detect synthetic media and AI-generated influence operations",
+      "Develop cognitive threat models for organizations and institutions",
+      "Design human decision protocols resilient to manipulation",
+      "Advise on media verification workflows and authentication infrastructure",
+      "Work with communications, security, and policy teams on response strategies"
+    ],
+    background: "Genuinely interdisciplinary: psychology plus cybersecurity plus AI literacy. No single degree produces this; it emerges from deliberate cross-training.",
+    transitions: ["Cybersecurity Analysts", "Behavioral Psychologists", "Intelligence Analysts", "Disinformation Researchers", "Journalists"],
+    demand: "AI-generated influence operations are scaling faster than detection capability. Critical infrastructure, elections, healthcare, and legal proceedings are all exposed. The field barely exists yet."
+  },
+  {
+    title: "Human-in-the-Loop Architect",
+    horizon: "10yr",
+    underdog: true,
+    core: "Designs the governance layer between AI systems and human decision-makers in regulated environments — specifying where humans must intervene, what they can override, and what accountability structures apply.",
+    responsibilities: [
+      "Map AI decision pathways against regulatory human oversight requirements",
+      "Design human review workflows with appropriate friction and authority",
+      "Specify override mechanisms and their audit trail requirements",
+      "Document human accountability chains for regulatory compliance",
+      "Work across engineering, legal, and domain expert teams simultaneously"
+    ],
+    background: "Systems architecture plus AI governance plus regulatory knowledge plus human factors design. A synthesis role requiring seniority across multiple domains.",
+    transitions: ["Systems Architects", "AI Governance Officers", "Human Factors Engineers", "Workflow Designers in regulated industries"],
+    demand: "EU AI Act mandates human oversight for high-risk AI. The architecture of that oversight is currently undefined. The people who design it will shape how AI is governed for decades."
+  }
+];
+
+let activeFilter = 'all';
+
+function filter(type, btn) {
+  activeFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function toggle(idx) {
+  const card = document.querySelector(`[data-idx="${idx}"]`);
+  card.classList.toggle('open');
+}
+
+function horizonBadge(h) {
+  if (h === 'now') return '<span class="badge badge-now">NOW</span>';
+  if (h === '5yr') return '<span class="badge badge-5yr">5 YEARS</span>';
+  return '<span class="badge badge-10yr">10 YEARS</span>';
+}
+
+function renderCards() {
+  const filtered = careers.filter(c => {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'underdog') return c.underdog;
+    return c.horizon === activeFilter;
+  });
+
+  document.getElementById('count').textContent = `SHOWING ${filtered.length} ROLE${filtered.length !== 1 ? 'S' : ''}`;
+
+  document.getElementById('cards').innerHTML = filtered.map((c) => {
+    const idx = careers.indexOf(c);
+    return `
+      <div class="card" data-idx="${idx}" onclick="toggle(${idx})">
+        <div class="card-header">
+          <div class="card-left">
+            <div class="card-title">${c.title}</div>
+            <div class="badges">
+              ${horizonBadge(c.horizon)}
+              ${c.underdog ? '<span class="badge badge-underdog">★ UNDERDOG</span>' : ''}
+            </div>
+          </div>
+          <div class="chevron">›</div>
+        </div>
+        <div class="card-body">
+          <p class="core">${c.core}</p>
+          <div class="section">
+            <div class="section-label">KEY RESPONSIBILITIES</div>
+            <ul class="section-content">
+              ${c.responsibilities.map(r => `<li>${r}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="section">
+            <div class="section-label">BACKGROUND NEEDED</div>
+            <p class="section-content">${c.background}</p>
+          </div>
+          <div class="section">
+            <div class="section-label">TRANSITIONS FROM</div>
+            <div class="transition-pills">
+              ${c.transitions.map(t => `<span class="pill">${t}</span>`).join('')}
+            </div>
+          </div>
+          <div class="section">
+            <div class="section-label">DEMAND DRIVER</div>
+            <div class="demand-tag">${c.demand}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+renderCards();
+</script>
+</body>
+</html>
