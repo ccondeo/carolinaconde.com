@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sierpiński · Fractal Structures of Infinite Depth</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07060A;--bg2:#0D0B12;
+  --text:#EEE4CC;--dim:#8A7E68;
+  --gold:#C8A84B;--gold-l:#EDD070;--gold-d:#7A5C18;
+  --border:rgba(200,168,75,0.15);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:'DM Mono','Courier New',monospace
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);font-weight:300;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:20px 56px;background:linear-gradient(to bottom,rgba(7,6,10,.95) 60%,transparent)}
+.nav-logo{font-family:var(--mono);font-size:10px;letter-spacing:.35em;color:var(--gold);text-transform:uppercase}
+.nav-links{display:flex;gap:36px}
+.nav-links a{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--dim);text-decoration:none;text-transform:uppercase;transition:color .25s}
+.nav-links a:hover{color:var(--gold)}
+
+/* HERO */
+#hero{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-overlay{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,transparent 30%,rgba(7,6,10,.55) 80%),linear-gradient(to bottom,transparent 40%,var(--bg) 100%)}
+.hero-text{position:relative;z-index:1;text-align:center}
+.hero-title{font-size:clamp(52px,11vw,130px);font-weight:300;letter-spacing:.28em;color:var(--gold-l);line-height:1;animation:fadeUp 2s ease both}
+.hero-rule{width:100px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:28px auto;animation:fadeUp 2s .35s ease both}
+.hero-sub{font-family:var(--mono);font-size:clamp(9px,1.3vw,12px);letter-spacing:.4em;color:var(--dim);text-transform:uppercase;animation:fadeUp 2s .6s ease both}
+.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--dim);text-transform:uppercase;animation:fadeUp 2.2s 1.2s ease both;text-align:center}
+.hero-scroll::after{content:'';display:block;width:1px;height:36px;background:linear-gradient(to bottom,var(--gold-d),transparent);margin:8px auto 0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* FADE IN SECTIONS */
+.fi{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s ease}
+.fi.vis{opacity:1;transform:translateY(0)}
+.fi-d1{transition-delay:.15s}.fi-d2{transition-delay:.3s}
+
+/* SECTION BASE */
+.wrap{max-width:1180px;margin:0 auto;padding:120px 56px}
+.section-tag{font-family:var(--mono);font-size:10px;letter-spacing:.4em;color:var(--gold-d);text-transform:uppercase;margin-bottom:18px}
+.section-title{font-size:clamp(38px,5.5vw,76px);font-weight:300;line-height:1.05;margin-bottom:28px}
+.section-title em{font-style:italic;color:var(--gold)}
+.body-text{font-size:17px;line-height:1.9;color:var(--dim);font-weight:300;max-width:500px}
+.body-text strong{color:var(--text);font-weight:400}
+
+/* EXHIBIT */
+.exhibit{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.canvas-frame{background:#08070D;border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.canvas-frame canvas{display:block;width:100%}
+.ctrl-bar{padding:14px 18px;border-top:1px solid var(--border);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ctrl-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;white-space:nowrap}
+input[type=range]{flex:1;min-width:60px;accent-color:var(--gold);cursor:pointer}
+.ctrl-val{font-family:var(--mono);font-size:11px;color:var(--gold);min-width:54px;text-align:right}
+.mode-btns{display:flex;gap:5px}
+.mode-btns button{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;background:transparent;cursor:pointer;border:1px solid var(--gold-d);color:var(--dim);border-radius:2px;transition:all .2s}
+.mode-btns button.active,.mode-btns button:hover{border-color:var(--gold);color:var(--gold)}
+
+/* MATH CALLOUT */
+.callout{border-left:1px solid var(--gold-d);padding:18px 24px;margin-top:48px}
+.callout .formula{font-family:var(--mono);font-size:13px;color:var(--gold);margin-bottom:6px}
+.callout .formula-note{font-size:14px;color:var(--dim);line-height:1.65}
+
+/* TETRAHEDRON GRID */
+.tetra-section{background:var(--bg2)}
+.tetra-top{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-bottom:64px}
+.tetra-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.t-panel{background:#08070D}
+.t-panel canvas{display:block;width:100%}
+.t-step{font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--gold-d);text-transform:uppercase;padding:14px 14px 5px}
+.t-desc{font-size:11px;color:var(--dim);padding:0 14px 14px;line-height:1.55}
+
+/* PROPERTIES */
+.props-section{border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.props-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.prop{background:var(--bg);padding:56px 44px;transition:background .3s}
+.prop:hover{background:#0D0B14}
+.prop-tag{font-family:var(--mono);font-size:9px;letter-spacing:.35em;color:var(--gold-d);text-transform:uppercase;margin-bottom:22px}
+.prop-value{font-family:var(--serif);font-size:62px;font-weight:300;color:var(--gold);line-height:1;letter-spacing:-.02em;margin-bottom:16px}
+.prop-name{font-size:15px;color:var(--text);margin-bottom:10px;font-weight:300}
+.prop-detail{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.75;font-weight:300}
+
+/* FOOTER */
+footer{padding:80px 56px;text-align:center;border-top:1px solid var(--border)}
+.footer-quote{font-family:var(--serif);font-size:clamp(18px,3vw,32px);font-weight:300;font-style:italic;color:var(--dim);margin-bottom:28px}
+.footer-rule{width:48px;height:1px;background:var(--gold-d);margin:0 auto 24px}
+.footer-credit{font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:var(--gold-d);text-transform:uppercase}
+
+/* RESPONSIVE */
+@media(max-width:820px){
+  nav{padding:16px 24px}
+  .nav-links{display:none}
+  .wrap{padding:80px 24px}
+  .exhibit,.tetra-top{grid-template-columns:1fr;gap:40px}
+  .tetra-grid{grid-template-columns:repeat(2,1fr)}
+  .props-grid{grid-template-columns:1fr}
+  footer{padding:60px 24px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Sierpiński</div>
+  <div class="nav-links">
+    <a href="#gasket">The Gasket</a>
+    <a href="#tetrahedron">The Tetrahedron</a>
+    <a href="#properties">Properties</a>
+  </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────── -->
+<div id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="hero-text">
+    <h1 class="hero-title">Sierpiński</h1>
+    <div class="hero-rule"></div>
+    <p class="hero-sub">Fractal Structures &nbsp;·&nbsp; Infinite Depth &nbsp;·&nbsp; Self-Similarity</p>
+  </div>
+  <div class="hero-scroll">Scroll to explore</div>
+</div>
+
+<!-- ── GASKET ─────────────────────────────────────────────────── -->
+<div id="gasket">
+<div class="wrap">
+  <div class="exhibit">
+    <div>
+      <p class="section-tag fi">01 / The Gasket</p>
+      <h2 class="section-title fi fi-d1">A triangle <em>within</em><br>every triangle</h2>
+      <p class="body-text fi fi-d2">
+        Remove the central inverted triangle from an equilateral triangle. Repeat on each of the three remaining triangles. Repeat forever.
+        <br><br>
+        You will see a process emerge. An infinitely detailed edge between filled and void, where every fragment is an exact mirror of the whole.
+        <br><br>
+        The <em>chaos game</em> reveals something stranger still: make millions of random jumps toward corners and the same structure crystallises from pure disorder. It is an attractor, a fixed point of infinite recursion.
+      </p>
+      <div class="callout fi fi-d2">
+        <div class="formula">dim = log(3) / log(2) ≈ 1.585</div>
+        <div class="formula-note">More than a line, less than a plane.<br>Area converges to zero. Perimeter diverges to infinity.</div>
+      </div>
+    </div>
+    <div class="canvas-frame fi fi-d1">
+      <canvas id="gasket-canvas"></canvas>
+      <div class="ctrl-bar">
+        <div class="mode-btns">
+          <button id="btn-chaos" class="active" onclick="setMode('chaos')">Chaos game</button>
+          <button id="btn-sub" onclick="setMode('sub')">Subdivision</button>
+        </div>
+        <span class="ctrl-lbl" id="range-lbl">Points</span>
+        <input type="range" id="g-range" min="500" max="80000" step="500" value="30000" oninput="onRange()">
+        <span class="ctrl-val" id="g-val">30,000</span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ── TETRAHEDRON ────────────────────────────────────────────── -->
+<div id="tetrahedron" class="tetra-section">
+<div class="wrap">
+  <div class="tetra-top">
+    <div>
+      <p class="section-tag fi">02 / The Tetrahedron</p>
+      <h2 class="section-title fi fi-d1">The fractal <em>lifted</em><br>into three dimensions</h2>
+    </div>
+    <div>
+      <p class="body-text fi fi-d1" style="max-width:100%;margin-top:68px">
+        Place four half-size tetrahedra at each vertex of the original. Remove the central octahedral void between them. The fractal dimension is exactly <strong>2.0</strong>, the dimension of a surface, despite living in three-dimensional space.
+        <br><br>
+        Viewed from the right angle, it projects cleanly onto the 2D gasket. Two fractals, one idea.
+      </p>
+      <div class="callout fi fi-d2">
+        <div class="formula">dim = log(4) / log(2) = 2.000</div>
+        <div class="formula-note">Volume → 0. Surface area → ∞.<br>The removed void at each step is a regular octahedron.</div>
+      </div>
+    </div>
+  </div>
+  <div class="tetra-grid fi">
+    <div class="t-panel"><div class="t-step">Step 01</div><canvas id="t0"></canvas><div class="t-desc">Solid tetrahedron, the seed form.</div></div>
+    <div class="t-panel"><div class="t-step">Step 02</div><canvas id="t1"></canvas><div class="t-desc">4 half-size copies placed at each vertex. Central octahedral void opens.</div></div>
+    <div class="t-panel"><div class="t-step">Step 03</div><canvas id="t2"></canvas><div class="t-desc">Same rule applied to all 4 copies → 16 sub-tetrahedra.</div></div>
+    <div class="t-panel"><div class="t-step">Step 04 → ∞</div><canvas id="t3"></canvas><div class="t-desc">16 → 64 → 256 → ∞. Volume → 0, detail → ∞.</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ── PROPERTIES ─────────────────────────────────────────────── -->
+<div id="properties" class="props-section">
+<div class="props-grid">
+  <div class="prop fi">
+    <div class="prop-tag">Sierpiński Gasket</div>
+    <div class="prop-value">1.585</div>
+    <div class="prop-name">Fractal Dimension</div>
+    <div class="prop-detail">log(3) / log(2)<br>Area = 0 · Perimeter = ∞<br>Fractal boundary between 1D and 2D</div>
+  </div>
+  <div class="prop fi fi-d1">
+    <div class="prop-tag">Sierpiński Tetrahedron</div>
+    <div class="prop-value">2.000</div>
+    <div class="prop-name">Fractal Dimension</div>
+    <div class="prop-detail">log(4) / log(2)<br>Volume = 0 · Surface area = ∞<br>A surface living inside 3D space</div>
+  </div>
+  <div class="prop fi fi-d2">
+    <div class="prop-tag">Both Structures</div>
+    <div class="prop-value">∞</div>
+    <div class="prop-name">Self-Similar Scales</div>
+    <div class="prop-detail">Every fragment is the whole<br>No characteristic length exists<br>Scale invariance at every zoom level</div>
+  </div>
+</div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <p class="footer-quote">"In every triangle, the whole triangle lives."</p>
+  <div class="footer-rule"></div>
+  <p class="footer-credit">Wacław Sierpiński · 1915 · Warsaw</p>
+</footer>
+
+<script>
+// ── SCROLL FADE-IN ─────────────────────────────────────────────
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis') });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+// ── HERO CHAOS GAME ────────────────────────────────────────────
+const hc = document.getElementById('hero-canvas');
+const hctx = hc.getContext('2d');
+let hraf, hTotal = 0, hx, hy;
+
+function initHero() {
+  cancelAnimationFrame(hraf);
+  hTotal = 0;
+  const dpr = window.devicePixelRatio || 1;
+  hc.width = window.innerWidth * dpr;
+  hc.height = window.innerHeight * dpr;
+  const W = window.innerWidth, H = window.innerHeight;
+  const pad = W * 0.1, tW = W - 2*pad, tH = tW * Math.sqrt(3)/2;
+  hx = W/2; hy = (H - tH)/2;
+  runHero();
+}
+
+function runHero() {
+  const dpr = window.devicePixelRatio || 1;
+  const W = window.innerWidth, H = window.innerHeight;
+  const pad = W*.1, tW = W-2*pad, tH = tW*Math.sqrt(3)/2, sy = (H-tH)/2;
+  const verts = [[W/2,sy],[pad,sy+tH],[W-pad,sy+tH]];
+  const batch = hTotal < 8000 ? 300 : hTotal < 40000 ? 2000 : 5000;
+
+  hctx.fillStyle = 'rgba(200,168,75,0.9)';
+  for (let i=0;i<batch;i++) {
+    const v = verts[Math.floor(Math.random()*3)];
+    hx = (hx+v[0])/2; hy = (hy+v[1])/2;
+    hctx.fillRect(hx*dpr, hy*dpr, dpr*0.8, dpr*0.8);
+  }
+  hTotal += batch;
+  if (hTotal < 90000) hraf = requestAnimationFrame(runHero);
+}
+
+window.addEventListener('resize', initHero);
+initHero();
+
+// ── GASKET ─────────────────────────────────────────────────────
+const gc = document.getElementById('gasket-canvas');
+const gctx = gc.getContext('2d');
+let gMode = 'chaos';
+
+function setMode(m) {
+  gMode = m;
+  document.getElementById('btn-chaos').classList.toggle('active', m==='chaos');
+  document.getElementById('btn-sub').classList.toggle('active', m==='sub');
+  document.getElementById('range-lbl').textContent = m==='chaos' ? 'Points' : 'Depth';
+  const r = document.getElementById('g-range');
+  if (m==='chaos') { r.min=500;r.max=80000;r.step=500;r.value=30000; document.getElementById('g-val').textContent='30,000'; }
+  else { r.min=1;r.max=7;r.step=1;r.value=5; document.getElementById('g-val').textContent='5'; }
+  renderGasket();
+}
+
+function onRange() {
+  const v = document.getElementById('g-range').value;
+  document.getElementById('g-val').textContent = gMode==='chaos' ? Number(v).toLocaleString() : v;
+  renderGasket();
+}
+
+function renderGasket() {
+  const dpr = window.devicePixelRatio || 1;
+  const W = gc.parentElement.clientWidth;
+  if (!W) return;
+  const H = Math.round(W * 0.85);
+  gc.width=W*dpr; gc.height=H*dpr; gc.style.height=H+'px';
+  gctx.setTransform(dpr,0,0,dpr,0,0);
+  gctx.fillStyle='#08070D'; gctx.fillRect(0,0,W,H);
+
+  const pad=28, tW=W-2*pad, tH=tW*Math.sqrt(3)/2;
+  const sy = pad + (H-2*pad-tH)/2;
+  const T=[W/2,sy], BL=[pad,sy+tH], BR=[W-pad,sy+tH];
+  const verts=[T,BL,BR];
+
+  if (gMode==='chaos') {
+    const n = parseInt(document.getElementById('g-range').value);
+    let [x,y] = T;
+    const img = gctx.createImageData(Math.round(W*dpr), Math.round(H*dpr));
+    const data = img.data;
+    for (let i=0;i<n;i++) {
+      const v = verts[Math.floor(Math.random()*3)];
+      x=(x+v[0])/2; y=(y+v[1])/2;
+      const px=Math.round(x*dpr), py=Math.round(y*dpr);
+      if (px>=0&&px<img.width&&py>=0&&py<img.height) {
+        const idx=(py*img.width+px)*4;
+        data[idx]=200;data[idx+1]=168;data[idx+2]=75;data[idx+3]=210;
+      }
+    }
+    gctx.putImageData(img,0,0);
+  } else {
+    const depth = parseInt(document.getElementById('g-range').value);
+    function ds(tx,ty,lx,ly,rx,ry,d) {
+      if (d===0) {
+        const cx=(tx+lx+rx)/3, cy=(ty+ly+ry)/3;
+        [[tx,ty,lx,ly,cx,cy,'#8A6018'],[tx,ty,rx,ry,cx,cy,'#C8A84B'],[lx,ly,rx,ry,cx,cy,'#EDD070']].forEach(([x1,y1,x2,y2,x3,y3,c])=>{
+          gctx.beginPath();gctx.moveTo(x1,y1);gctx.lineTo(x2,y2);gctx.lineTo(x3,y3);gctx.closePath();
+          gctx.fillStyle=c;gctx.fill();
+          gctx.strokeStyle='rgba(80,50,8,.35)';gctx.lineWidth=.5;gctx.stroke();
+        });
+        return;
+      }
+      const mTL=[(tx+lx)/2,(ty+ly)/2], mTR=[(tx+rx)/2,(ty+ry)/2], mLR=[(lx+rx)/2,(ly+ry)/2];
+      ds(tx,ty,mTL[0],mTL[1],mTR[0],mTR[1],d-1);
+      ds(mTL[0],mTL[1],lx,ly,mLR[0],mLR[1],d-1);
+      ds(mTR[0],mTR[1],mLR[0],mLR[1],rx,ry,d-1);
+    }
+    ds(T[0],T[1],BL[0],BL[1],BR[0],BR[1],depth);
+  }
+  gctx.beginPath();gctx.moveTo(T[0],T[1]);gctx.lineTo(BL[0],BL[1]);gctx.lineTo(BR[0],BR[1]);gctx.closePath();
+  gctx.strokeStyle='rgba(200,168,75,.2)';gctx.lineWidth=1;gctx.stroke();
+}
+
+// ── TETRAHEDRON ────────────────────────────────────────────────
+const TC={f1:'#9A7520',f2:'#C4A030',f3:'#6A4E10',stroke:'#4A3208',bg:'#08070D'};
+
+function solidTet(ctx,T,BL,BR){
+  const cx=(T[0]+BL[0]+BR[0])/3, cy=(T[1]+BL[1]+BR[1])/3;
+  [[T,BL,[cx,cy],TC.f1],[T,BR,[cx,cy],TC.f2],[BL,BR,[cx,cy],TC.f3]].forEach(([a,b,c,col])=>{
+    ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.lineTo(c[0],c[1]);ctx.closePath();
+    ctx.fillStyle=col;ctx.fill();
+    ctx.strokeStyle=TC.stroke;ctx.lineWidth=.5;ctx.stroke();
+  });
+  ctx.beginPath();ctx.moveTo(T[0],T[1]);ctx.lineTo(BL[0],BL[1]);ctx.lineTo(BR[0],BR[1]);ctx.closePath();
+  ctx.strokeStyle=TC.stroke;ctx.lineWidth=1;ctx.stroke();
+}
+
+function drawTet(ctx,T,BL,BR,d){
+  if(d===0){solidTet(ctx,T,BL,BR);return}
+  const mTBL=[(T[0]+BL[0])/2,(T[1]+BL[1])/2];
+  const mTBR=[(T[0]+BR[0])/2,(T[1]+BR[1])/2];
+  const mBLBR=[(BL[0]+BR[0])/2,(BL[1]+BR[1])/2];
+  drawTet(ctx,T,mTBL,mTBR,d-1);
+  drawTet(ctx,mTBL,BL,mBLBR,d-1);
+  drawTet(ctx,mTBR,mBLBR,BR,d-1);
+}
+
+function renderTet(id,depth){
+  const cv=document.getElementById(id);
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.parentElement.clientWidth;
+  if(!W)return;
+  const H=Math.round(W*.88);
+  cv.width=W*dpr;cv.height=H*dpr;cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle=TC.bg;ctx.fillRect(0,0,W,H);
+  const pad=16,tW=W-2*pad,tH=tW*Math.sqrt(3)/2,sy=pad+(H-2*pad-tH)/2;
+  drawTet(ctx,[W/2,sy],[pad,sy+tH],[W-pad,sy+tH],depth);
+}
+
+function renderAll(){
+  renderGasket();
+  [0,1,2,3].forEach(d=>renderTet('t'+d,d));
+}
+
+window.addEventListener('resize', ()=>{initHero();renderAll()});
+requestAnimationFrame(renderAll);
+</script>
+</body>
+</html>
