@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carolina Conde — Channeler</title>
+<meta name="description" content="Studio of Carolina Conde — translator, builder, channeler. Work at the intersection of language, technology, and human intent.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#0C0A0F;
+  --bg2:#131018;
+  --text:#EDE4D4;
+  --dim:#7A7062;
+  --accent:#E8825A;
+  --border:rgba(237,228,212,0.07);
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono','Courier New',monospace;
+  --c-translation:#5DCAA5;
+  --c-technology:#8B82E8;
+  --c-tools:#C8A84B;
+  --c-creative:#E8825A;
+  --c-education:#5B9BD5;
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:22px 56px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom,rgba(12,10,15,.96) 50%,transparent)
+}
+.nav-name{font-family:var(--serif);font-size:15px;font-weight:300;color:var(--text)}
+.nav-name em{font-style:italic;color:var(--accent)}
+.nav-right{display:flex;gap:32px;align-items:center}
+.nav-link{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--dim);text-decoration:none;text-transform:uppercase;transition:color .2s}
+.nav-link:hover{color:var(--accent)}
+
+/* ── HERO ── */
+header{
+  min-height:100vh;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:80px;
+  padding:120px 56px 80px;
+  max-width:1200px;margin:0 auto;
+}
+.hero-left{}
+.hero-tag{
+  font-family:var(--mono);font-size:10px;letter-spacing:.45em;
+  color:var(--accent);text-transform:uppercase;margin-bottom:24px;
+  opacity:0;animation:rise 1.2s ease both
+}
+.hero-name{
+  font-family:var(--serif);
+  font-size:clamp(56px,8vw,110px);
+  font-weight:300;line-height:.92;
+  letter-spacing:-.02em;
+  color:var(--text);margin-bottom:12px;
+  opacity:0;animation:rise 1.2s .18s ease both
+}
+.hero-name em{font-style:italic;color:var(--accent);display:block}
+.hero-role{
+  font-family:var(--serif);font-size:clamp(16px,2vw,22px);
+  font-weight:300;font-style:italic;color:var(--dim);
+  opacity:0;animation:rise 1.2s .32s ease both
+}
+.hero-right{opacity:0;animation:rise 1.2s .48s ease both}
+.hero-rule{width:32px;height:1px;background:var(--accent);opacity:.6;margin-bottom:28px}
+.hero-bio{
+  font-size:16px;line-height:1.9;color:var(--dim);
+  max-width:480px;margin-bottom:32px
+}
+.hero-bio strong{color:var(--text);font-weight:400}
+.hero-meta{display:flex;flex-direction:column;gap:10px}
+.hero-meta-item{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  color:var(--dim);text-transform:uppercase;
+  display:flex;align-items:center;gap:10px
+}
+.hero-meta-item::before{content:'';width:20px;height:1px;background:var(--dim);opacity:.4;flex-shrink:0}
+.hero-scroll{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:9px;letter-spacing:.3em;
+  color:var(--dim);text-transform:uppercase;
+  opacity:0;animation:rise 1.6s 1s ease both;text-align:center
+}
+.hero-scroll::after{
+  content:'';display:block;width:1px;height:32px;
+  background:linear-gradient(to bottom,rgba(232,130,90,.5),transparent);
+  margin:8px auto 0
+}
+
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── DIVIDER ── */
+.full-rule{height:1px;background:var(--border)}
+
+/* ── WORK ── */
+.work{max-width:1200px;margin:0 auto;padding:72px 56px 120px}
+
+.work-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:48px;flex-wrap:wrap;gap:16px
+}
+.work-label{
+  font-family:var(--serif);font-size:14px;
+  font-style:italic;font-weight:300;color:var(--dim)
+}
+.filters{display:flex;gap:5px;flex-wrap:wrap}
+.f-btn{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;padding:5px 13px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--dim);cursor:pointer;border-radius:2px;transition:all .2s
+}
+.f-btn:hover{border-color:rgba(232,130,90,.4);color:var(--accent)}
+.f-btn.on{border-color:var(--accent);color:var(--accent)}
+
+/* ── GRID ── */
+.grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:3px;overflow:hidden
+}
+.card{
+  background:var(--bg);padding:32px 28px 28px;
+  display:flex;flex-direction:column;gap:14px;
+  transition:background .25s;
+  text-decoration:none;color:inherit;position:relative
+}
+a.card:hover{background:var(--bg2)}
+.card-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.cat{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;padding:3px 8px;border-radius:1px
+}
+.cat-translation{background:rgba(93,202,165,.1);color:var(--c-translation)}
+.cat-technology{background:rgba(139,130,232,.1);color:var(--c-technology)}
+.cat-tools{background:rgba(200,168,75,.1);color:var(--c-tools)}
+.cat-creative{background:rgba(232,130,90,.1);color:var(--c-creative)}
+.cat-education{background:rgba(91,155,213,.1);color:var(--c-education)}
+
+.status{font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase}
+.s-live{color:var(--c-translation)}
+.s-preview{color:var(--c-tools)}
+.s-soon{color:var(--dim)}
+
+.card-title{
+  font-family:var(--serif);
+  font-size:clamp(20px,2.2vw,28px);
+  font-weight:300;line-height:1.1;color:var(--text)
+}
+.card-desc{font-size:13px;line-height:1.75;color:var(--dim);flex:1}
+.card-foot{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
+.card-lang{font-family:var(--mono);font-size:9px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase}
+.card-arr{
+  font-size:16px;color:var(--accent);
+  opacity:0;transform:translateX(-6px);
+  transition:opacity .2s,transform .2s
+}
+a.card:hover .card-arr{opacity:1;transform:translateX(0)}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:52px 56px;
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:20px
+}
+.foot-quote{
+  font-family:var(--serif);font-size:15px;
+  font-style:italic;font-weight:300;color:var(--dim)
+}
+.foot-contact{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--dim)
+}
+.foot-contact a{color:var(--accent);text-decoration:none}
+.foot-contact a:hover{text-decoration:underline}
+
+/* ── FADE IN ── */
+.fi{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform .9s ease}
+.fi.vis{opacity:1;transform:none}
+.d1{transition-delay:.12s}.d2{transition-delay:.24s}.d3{transition-delay:.36s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  nav{padding:16px 24px}
+  header{grid-template-columns:1fr;min-height:auto;padding:110px 24px 64px;gap:36px}
+  .hero-right{max-width:100%}
+  .work{padding:52px 24px 80px}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .work-bar{flex-direction:column;align-items:flex-start}
+  footer{padding:40px 24px;flex-direction:column;align-items:flex-start}
+  .hero-scroll{display:none}
+}
+@media(max-width:520px){
+  .grid{grid-template-columns:1fr}
+  .hero-name{font-size:clamp(48px,14vw,80px)}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">Carolina <em>Conde</em></span>
+  <div class="nav-right">
+    <a href="#work" class="nav-link">Work</a>
+    <a href="mailto:translator@carolinaconde.com" class="nav-link">Contact</a>
+  </div>
+</nav>
+
+<header style="position:relative">
+  <div class="hero-left">
+    <p class="hero-tag">Studio</p>
+    <h1 class="hero-name">Carolina<em>Conde</em></h1>
+    <p class="hero-role">Channeler</p>
+  </div>
+  <div class="hero-right">
+    <div class="hero-rule"></div>
+    <p class="hero-bio">
+      Channeling between <strong>languages</strong>, between <strong>humans and machines</strong>, between disciplines.
+      Medical translator and interpreter. AI governance practitioner.
+      Builder of tools that live at the edge of what language can do.
+    </p>
+    <div class="hero-meta">
+      <span class="hero-meta-item">Durham, NC</span>
+      <span class="hero-meta-item">English · Español</span>
+      <span class="hero-meta-item">30+ years in medical translation</span>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</header>
+
+<div class="full-rule"></div>
+
+<section class="work" id="work">
+  <div class="work-bar fi">
+    <p class="work-label">Selected work</p>
+    <div class="filters" id="filters">
+      <button class="f-btn on" data-f="all">All</button>
+      <button class="f-btn" data-f="translation">Translation</button>
+      <button class="f-btn" data-f="technology">Technology</button>
+      <button class="f-btn" data-f="tools">Tools</button>
+      <button class="f-btn" data-f="creative">Creative</button>
+      <button class="f-btn" data-f="education">Education</button>
+    </div>
+  </div>
+  <div class="grid fi d1" id="grid"></div>
+</section>
+
+<footer>
+  <p class="foot-quote">"Channeling language, technology, and human intent."</p>
+  <p class="foot-contact"><a href="mailto:translator@carolinaconde.com">translator@carolinaconde.com</a></p>
+</footer>
+
+<script>
+const works = [
+  {
+    title: 'Sierpiński',
+    desc: 'An interactive exhibition of fractal structures. Self-similarity rendered visible at every scale.',
+    cat: 'creative', lang: 'EN', status: 'live', link: 'work/sierpinski/'
+  },
+  {
+    title: 'Ballroom & Drag Glossary',
+    desc: 'A living bilingual reference for ballroom culture and drag terminology. English to Latin American Spanish.',
+    cat: 'translation', lang: 'EN / ES', status: 'live', link: 'work/glossary/'
+  },
+  {
+    title: 'Emerging Careers 2026–2036',
+    desc: 'Intelligence reference for roles emerging at the intersection of AI and human work.',
+    cat: 'technology', lang: 'EN', status: 'live', link: 'work/emerging-careers/'
+  },
+  {
+    title: 'BandCaliper',
+    desc: 'A precision analysis tool for musicians and bands.',
+    cat: 'tools', lang: 'EN', status: 'live', link: 'https://bandcaliper.com'
+  },
+  {
+    title: 'Invoice Generator',
+    desc: 'A clean, professional invoicing tool built for independent translators and contractors.',
+    cat: 'tools', lang: 'EN', status: 'live', link: 'work/invoice-generator/'
+  },
+  {
+    title: 'Enterprise AI Briefing',
+    desc: 'A magazine-format intelligence briefing on enterprise AI governance and adoption.',
+    cat: 'technology', lang: 'EN', status: 'preview', link: null
+  },
+  {
+    title: 'AI Video Generation',
+    desc: 'A practical course module on AI video tools for educators and content creators.',
+    cat: 'education', lang: 'EN', status: 'preview', link: null
+  },
+  {
+    title: 'Rocky Roach',
+    desc: 'A bilingual illustrated story for children.',
+    cat: 'creative', lang: 'EN / ES', status: 'soon', link: null
+  },
+  {
+    title: 'Be Whimsy',
+    desc: 'A behavioral intervention mobile app with a Modern Knight aesthetic.',
+    cat: 'technology', lang: 'EN', status: 'soon', link: null
+  }
+];
+
+const sLabel = {live:'Live', preview:'Preview', soon:'Coming soon'};
+const sClass = {live:'s-live', preview:'s-preview', soon:'s-soon'};
+
+function render(filter) {
+  const list = filter === 'all' ? works : works.filter(w => w.cat === filter);
+  document.getElementById('grid').innerHTML = list.map(w => {
+    const live = w.status === 'live';
+    const tag = live ? 'a' : 'div';
+    const attr = live ? `href="${w.link}"${w.link.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}` : '';
+    return `<${tag} class="card" ${attr}>
+      <div class="card-row">
+        <span class="cat cat-${w.cat}">${w.cat}</span>
+        <span class="status ${sClass[w.status]}">${sLabel[w.status]}</span>
+      </div>
+      <h2 class="card-title">${w.title}</h2>
+      <p class="card-desc">${w.desc}</p>
+      <div class="card-foot">
+        <span class="card-lang">${w.lang}</span>
+        ${live ? '<span class="card-arr">→</span>' : ''}
+      </div>
+    </${tag}>`;
+  }).join('');
+}
+
+document.getElementById('filters').addEventListener('click', e => {
+  const btn = e.target.closest('.f-btn');
+  if (!btn) return;
+  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  render(btn.dataset.f);
+});
+
+render('all');
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis') });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
