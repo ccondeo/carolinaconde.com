@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BandCaliper</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0e0f11; --surface: #17181c; --surface2: #1e2025;
+    --border: #2a2c32; --text: #e2e4e9; --text2: #8b8f98;
+    --accent: #c8f045; --accent-dim: #3a4218; --red: #f0564a;
+    --mono: 'JetBrains Mono', monospace; --sans: 'DM Sans', sans-serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+  .shell { max-width: 680px; margin: 0 auto; padding: 48px 24px 80px; }
+  .logo { font-family: var(--mono); font-weight: 700; font-size: 22px; letter-spacing: -0.5px; margin-bottom: 4px; }
+  .logo span { color: var(--accent); }
+  .tagline { font-size: 13px; color: var(--text2); margin-bottom: 40px; }
+  .section { margin-bottom: 28px; }
+  .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text2); margin-bottom: 10px; }
+  .upload-zone { border: 1.5px dashed var(--border); border-radius: 10px; padding: 36px 20px; text-align: center; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+  .upload-zone:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .upload-zone.has-file { border-style: solid; border-color: var(--accent); background: var(--accent-dim); }
+  .upload-zone input { display: none; }
+  .upload-text { font-size: 14px; color: var(--text2); }
+  .upload-text strong { color: var(--text); }
+  .file-name { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-top: 6px; }
+  .preview-wrap { margin-top: 12px; border-radius: 8px; overflow: hidden; background: var(--surface); display: none; }
+  .preview-wrap.visible { display: block; }
+  .preview-wrap img { display: block; max-width: 100%; max-height: 260px; margin: 0 auto; }
+  .toggle-row { display: flex; border-radius: 8px; overflow: hidden; border: 1.5px solid var(--border); width: fit-content; }
+  .toggle-btn { font-family: var(--mono); font-size: 13px; font-weight: 600; padding: 10px 24px; border: none; background: var(--surface); color: var(--text2); cursor: pointer; transition: background 0.12s, color 0.12s; }
+  .toggle-btn.active { background: var(--accent); color: var(--bg); }
+  .band-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .band-btn { font-family: var(--mono); font-size: 14px; font-weight: 700; width: 48px; height: 44px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface); color: var(--text2); cursor: pointer; transition: all 0.12s; }
+  .band-btn:hover { border-color: var(--text2); }
+  .band-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+  .analyze-btn { font-family: var(--mono); font-size: 14px; font-weight: 700; padding: 14px 40px; border: none; border-radius: 8px; background: var(--accent); color: var(--bg); cursor: pointer; letter-spacing: 0.3px; transition: opacity 0.12s; }
+  .analyze-btn:hover { opacity: 0.88; }
+  .analyze-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .report-wrap { display: none; margin-top: 36px; }
+  .report-wrap.visible { display: block; }
+  .report-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .report-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 20px; font-family: var(--mono); font-size: 12.5px; line-height: 1.75; white-space: pre-wrap; color: var(--text); }
+  .copy-btn { font-family: var(--mono); font-size: 11px; font-weight: 600; padding: 7px 16px; border: 1.5px solid var(--border); border-radius: 6px; background: var(--surface2); color: var(--text2); cursor: pointer; transition: all 0.12s; }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .band-visual { display: none; margin-top: 16px; border-radius: 8px; overflow: hidden; height: 28px; }
+  .band-visual.visible { display: flex; }
+  .band-swatch { height: 100%; }
+  .error-msg { display: none; font-size: 13px; color: var(--red); margin-top: 12px; font-family: var(--mono); }
+  .error-msg.visible { display: block; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="logo">Band<span>Caliper</span></div>
+  <div class="tagline">Measure color band widths from any image.</div>
+
+  <div class="section">
+    <div class="label">Image</div>
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept="image/*">
+      <div class="upload-text" id="uploadText"><strong>Click to upload</strong> or drag &amp; drop</div>
+      <div class="file-name" id="fileName"></div>
+    </div>
+    <div class="preview-wrap" id="previewWrap"><img id="previewImg" alt="preview"></div>
+  </div>
+
+  <div class="section">
+    <div class="label">Orientation</div>
+    <div class="toggle-row" id="orientToggle">
+      <button class="toggle-btn active" data-val="vertical">Vertical</button>
+      <button class="toggle-btn" data-val="horizontal">Horizontal</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="label">Number of Bands</div>
+    <div class="band-row" id="bandRow">
+      <button class="band-btn" data-n="2">2</button>
+      <button class="band-btn" data-n="3">3</button>
+      <button class="band-btn" data-n="4">4</button>
+      <button class="band-btn" data-n="5">5</button>
+      <button class="band-btn" data-n="6">6</button>
+      <button class="band-btn" data-n="7">7</button>
+    </div>
+  </div>
+
+  <div class="section" style="display:flex;gap:12px;align-items:center">
+    <button class="analyze-btn" id="analyzeBtn" disabled>Analyze</button>
+    <button class="analyze-btn" id="clearBtn" style="background:var(--surface2);color:var(--text2);border:1.5px solid var(--border)" disabled>Clear</button>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <div class="report-wrap" id="reportWrap">
+    <div class="report-header">
+      <div class="label" style="margin-bottom:0">Report</div>
+      <div style="display:flex;gap:12px;align-items:center">
+        <label style="font-family:var(--mono);font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px;cursor:pointer">
+          <input type="checkbox" id="debugToggle" style="accent-color:var(--accent)"> Debug
+        </label>
+        <button class="copy-btn" id="copyBtn">Copy</button>
+      </div>
+    </div>
+    <div class="band-visual" id="bandVisual"></div>
+    <div class="report-box" id="reportBox"></div>
+  </div>
+</div>
+<canvas id="hiddenCanvas" style="display:none"></canvas>
+<script>
+(function(){
+  let loadedImg=null, orientation='vertical', bandCount=null;
+  let lastReportUser='', lastReportDebug='';
+
+  const $=id=>document.getElementById(id);
+  const fileInput=$('fileInput'),uploadZone=$('uploadZone'),uploadText=$('uploadText');
+  const fileNameEl=$('fileName'),previewWrap=$('previewWrap'),previewImg=$('previewImg');
+  const orientToggle=$('orientToggle'),bandRow=$('bandRow');
+  const analyzeBtn=$('analyzeBtn'),clearBtn=$('clearBtn'),errorMsg=$('errorMsg');
+  const reportWrap=$('reportWrap'),reportBox=$('reportBox');
+  const copyBtn=$('copyBtn'),debugToggle=$('debugToggle'),bandVisual=$('bandVisual');
+  const canvas=$('hiddenCanvas'),ctx=canvas.getContext('2d',{willReadFrequently:true});
+
+  // ── Upload ──
+  uploadZone.addEventListener('click',e=>{if(e.target!==fileInput)fileInput.click();});
+  uploadZone.addEventListener('dragover',e=>{e.preventDefault();uploadZone.style.borderColor='var(--accent)';});
+  uploadZone.addEventListener('dragleave',()=>{uploadZone.style.borderColor='';});
+  uploadZone.addEventListener('drop',e=>{e.preventDefault();uploadZone.style.borderColor='';if(e.dataTransfer.files.length)handleFile(e.dataTransfer.files[0]);});
+  fileInput.addEventListener('change',()=>{if(fileInput.files.length)handleFile(fileInput.files[0]);});
+
+  function handleFile(file){
+    if(!file.type.startsWith('image/'))return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const img=new Image();
+      img.onload=()=>{
+        loadedImg=img;
+        uploadZone.classList.add('has-file');
+        uploadText.innerHTML='<strong>Image loaded</strong>';
+        fileNameEl.textContent=file.name;
+        previewImg.src=ev.target.result;
+        previewWrap.classList.add('visible');
+        checkReady();
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Controls ──
+  orientToggle.addEventListener('click',e=>{
+    const btn=e.target.closest('.toggle-btn');if(!btn)return;
+    orientToggle.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');orientation=btn.dataset.val;
+  });
+  bandRow.addEventListener('click',e=>{
+    const btn=e.target.closest('.band-btn');if(!btn)return;
+    bandRow.querySelectorAll('.band-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');bandCount=parseInt(btn.dataset.n);checkReady();
+  });
+  function checkReady(){analyzeBtn.disabled=!(loadedImg&&bandCount);clearBtn.disabled=!loadedImg;}
+
+  clearBtn.addEventListener('click',()=>{
+    loadedImg=null;bandCount=null;fileInput.value='';
+    uploadZone.classList.remove('has-file');
+    uploadText.innerHTML='<strong>Click to upload</strong> or drag &amp; drop';
+    fileNameEl.textContent='';previewWrap.classList.remove('visible');previewImg.src='';
+    bandRow.querySelectorAll('.band-btn').forEach(b=>b.classList.remove('active'));
+    reportWrap.classList.remove('visible');bandVisual.classList.remove('visible');
+    bandVisual.innerHTML='';reportBox.textContent='';errorMsg.classList.remove('visible');
+    analyzeBtn.disabled=true;clearBtn.disabled=true;
+  });
+
+  // ── Helpers ──
+  function q(v){return Math.round(v/16)*16;}
+  function distSq(r1,g1,b1,r2,g2,b2){const dr=r1-r2,dg=g1-g2,db=b1-b2;return dr*dr+dg*dg+db*db;}
+  function runDist(a,b){return distSq(a.qr,a.qg,a.qb,b.qr,b.qg,b.qb);}
+
+  // ══════════════════════════════════════
+  // ANALYZE
+  // ══════════════════════════════════════
+  analyzeBtn.addEventListener('click',()=>{
+    errorMsg.classList.remove('visible');
+    try {
+      canvas.width=loadedImg.naturalWidth;canvas.height=loadedImg.naturalHeight;
+      ctx.drawImage(loadedImg,0,0);
+      const w=canvas.width,h=canvas.height;
+      const id=ctx.getImageData(0,0,w,h),px=id.data;
+      const isV=orientation==='vertical';
+
+      // ── STEP 0: Background flood-fill ──
+      const BG_TOL=48;
+      const isBg=new Uint8Array(w*h);
+
+      function cornerAvg(cx,cy){
+        let r=0,g=0,b=0,n=0;
+        for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){
+          const sx=Math.min(Math.max(cx+dx,0),w-1),sy=Math.min(Math.max(cy+dy,0),h-1);
+          const p=(sy*w+sx)*4;r+=px[p];g+=px[p+1];b+=px[p+2];n++;
+        }
+        return[r/n,g/n,b/n];
+      }
+      const corners=[cornerAvg(0,0),cornerAvg(w-1,0),cornerAvg(0,h-1),cornerAvg(w-1,h-1)];
+      corners.sort((a,b)=>(a[0]+a[1]+a[2])-(b[0]+b[1]+b[2]));
+      const bgRef=corners[1];
+
+      // BFS with Int32Array queue (O(1) dequeue, handles 1M+ pixels)
+      const bfsQ=new Int32Array(w*h);let qH=0,qT=0;
+      function tryEn(x,y){
+        if(x<0||x>=w||y<0||y>=h)return;
+        const i=y*w+x;if(isBg[i])return;
+        const p=i*4,dr=px[p]-bgRef[0],dg=px[p+1]-bgRef[1],db=px[p+2]-bgRef[2];
+        if(Math.sqrt(dr*dr+dg*dg+db*db)<=BG_TOL){isBg[i]=1;bfsQ[qT++]=i;}
+      }
+      for(let x=0;x<w;x++){tryEn(x,0);tryEn(x,h-1);}
+      for(let y=0;y<h;y++){tryEn(0,y);tryEn(w-1,y);}
+      while(qH<qT){const i=bfsQ[qH++],x=i%w,y=(i-x)/w;tryEn(x-1,y);tryEn(x+1,y);tryEn(x,y-1);tryEn(x,y+1);}
+
+      // Foreground bbox
+      let fgX0=w,fgX1=0,fgY0=h,fgY1=0,hasFg=false;
+      for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+        if(!isBg[y*w+x]){if(x<fgX0)fgX0=x;if(x>fgX1)fgX1=x;if(y<fgY0)fgY0=y;if(y>fgY1)fgY1=y;hasFg=true;}
+      }
+      if(!hasFg){fgX0=0;fgX1=w-1;fgY0=0;fgY1=h-1;}
+
+      // Full-bleed check: corners very different → no real bg
+      let maxCD=0;
+      for(let a=0;a<4;a++)for(let b=a+1;b<4;b++){
+        const d=Math.sqrt(distSq(corners[a][0],corners[a][1],corners[a][2],corners[b][0],corners[b][1],corners[b][2]));
+        if(d>maxCD)maxCD=d;
+      }
+      const fgA=(fgX1-fgX0+1)*(fgY1-fgY0+1);
+      if((1-fgA/(w*h))>0.05&&maxCD>BG_TOL*2){fgX0=0;fgX1=w-1;fgY0=0;fgY1=h-1;isBg.fill(0);}
+
+      const axS=isV?fgX0:fgY0,axE=isV?fgX1:fgY1,axLen=axE-axS+1;
+      const centerCross=isV?Math.round((fgY0+fgY1)/2):Math.round((fgX0+fgX1)/2);
+
+      // ── STEP 1: Center-line scan (within bbox) ──
+      const samples=new Array(axLen);
+      for(let i=0;i<axLen;i++){
+        const coord=axS+i;
+        let p;
+        if(isV){p=(centerCross*w+coord)*4;}else{p=(coord*w+centerCross)*4;}
+        samples[i]={r:px[p],g:px[p+1],b:px[p+2]};
+      }
+
+      // ── STEP 2: Tolerance-based run detection ──
+      const RUN_TOL_SQ=30*30,runs=[];
+      let rS=0,repR=samples[0].r,repG=samples[0].g,repB=samples[0].b;
+      for(let i=1;i<=axLen;i++){
+        let cut=(i===axLen);
+        if(!cut){const dr=samples[i].r-repR,dg=samples[i].g-repG,db=samples[i].b-repB;if(dr*dr+dg*dg+db*db>RUN_TOL_SQ)cut=true;}
+        if(cut){
+          const s=samples[rS];
+          const qr=q(s.r),qg=q(s.g),qb=q(s.b);
+          runs.push({start:rS,end:i-1,width:i-rS,qr,qg,qb,color:`rgb(${qr},${qg},${qb})`});
+          if(i<axLen){rS=i;repR=samples[i].r;repG=samples[i].g;repB=samples[i].b;}
+        }
+      }
+
+      // ── STEP 2b: Micro-run merge with boundary guard ──
+      const minRunPx=Math.max(5,Math.round(axLen*0.005));
+      const rawRunCount=runs.length;
+      const FRAG=3,STRONG_SQ=100*100,MAX_MERGE_SQ=80*80;
+
+      let merged=true;
+      while(merged){merged=false;for(let i=0;i<runs.length;i++){
+        if(runs[i].width>=minRunPx)continue;
+        const hL=i>0,hR=i<runs.length-1;
+        const dL=hL?runDist(runs[i],runs[i-1]):Infinity,dR=hR?runDist(runs[i],runs[i+1]):Infinity;
+        const best=Math.min(dL,dR),isFrag=runs[i].width<=FRAG;
+        if(!isFrag){if(best>MAX_MERGE_SQ)continue;if(hL&&hR&&runDist(runs[i-1],runs[i+1])>=STRONG_SQ)continue;}
+        const ti=dL<=dR?i-1:i+1,t=runs[ti],m=runs[i];
+        t.start=Math.min(t.start,m.start);t.end=Math.max(t.end,m.end);t.width=t.end-t.start+1;
+        runs.splice(i,1);merged=true;break;
+      }}
+      // Cleanup: orphans between same-color neighbors
+      merged=true;
+      while(merged){merged=false;for(let i=1;i<runs.length-1;i++){
+        if(runs[i].width>=minRunPx)continue;
+        if(runDist(runs[i-1],runs[i+1])<32*32){
+          runs[i-1].end=runs[i+1].end;runs[i-1].width=runs[i-1].end-runs[i-1].start+1;
+          runs.splice(i,2);merged=true;break;
+        }
+      }}
+
+      // ── STEP 2c: Trim edge runs via flood-fill mask ──
+      function isRunBg(run){
+        let bgC=0;
+        for(let p=run.start;p<=run.end;p++){
+          const coord=axS+p;
+          const idx=isV?centerCross*w+coord:coord*w+centerCross;
+          if(isBg[idx])bgC++;
+        }
+        return bgC>run.width*0.5;
+      }
+      while(runs.length>0&&isRunBg(runs[0]))runs.shift();
+      while(runs.length>0&&isRunBg(runs[runs.length-1]))runs.pop();
+
+      // ── STEP 3: Dominant band window selection ──
+      let winApplied=false,outRuns;
+      if(runs.length===bandCount){outRuns=runs;}
+      else if(runs.length>bandCount){
+        winApplied=true;let bS=0,bW=0;
+        for(let s=0;s<=runs.length-bandCount;s++){let tw=0;for(let j=s;j<s+bandCount;j++)tw+=runs[j].width;if(tw>bW){bW=tw;bS=s;}}
+        outRuns=runs.slice(bS,bS+bandCount);
+      }else{outRuns=runs;}
+
+      // ── STEP 4: Widths & ratios ──
+      const widths=outRuns.map(r=>r.width);
+      const total=widths.reduce((s,v)=>s+v,0);
+      const ratios=widths.map(v=>v/total);
+
+      // ── STEP 5: Report ──
+      const L=[],D=[];
+      L.push('BandCaliper Report','==================','');
+      L.push(`Orientation:        ${orientation}`);
+      L.push(`Bands requested:    ${bandCount}`);
+      L.push(`Bands detected:     ${outRuns.length}`);
+      L.push(`Image size:         ${w} x ${h} px`);
+      D.push(`Measurement axis:   ${isV?'X (left → right)':'Y (top → bottom)'}`);
+      D.push(`Axis length:        ${axLen} px`);
+      D.push(`Center-line:        ${isV?'y = '+centerCross:'x = '+centerCross}`);
+      D.push(`Foreground bbox:    x ${fgX0}–${fgX1}, y ${fgY0}–${fgY1}`);
+      D.push(`Raw runs found:     ${rawRunCount}`);
+      D.push(`Micro-run merge:    minRunPx = ${minRunPx}, runs after = ${runs.length}`);
+      D.push(`Window selection:   ${winApplied?'applied ('+bandCount+'-run window)':'not needed'}`);
+      L.push('','Bands (spatial order):','─'.repeat(56));
+      for(let i=0;i<outRuns.length;i++){
+        const r=outRuns[i],aS=r.start+axS,aE=r.end+axS;
+        const rng=isV?`x ${aS}–${aE}`:`y ${aS}–${aE}`;
+        L.push(`  Band ${i+1}:  ${widths[i]} px  (${rng})  ratio: ${ratios[i].toFixed(6)}`);
+      }
+      L.push('─'.repeat(56));
+      L.push(`Ratio sum:          ${ratios.reduce((s,v)=>s+v,0).toFixed(6)}`);
+      L.push('','Ratio vector:',`  [${ratios.map(r=>r.toFixed(6)).join(', ')}]`);
+
+      // ── STEP 6: Symmetry ──
+      const n=widths.length;
+      if(n>=2){
+        const pairs=Math.floor(n/2);let maxDv=0,sumDv=0;
+        for(let i=0;i<pairs;i++){const a=widths[i],b=widths[n-1-i],av=(a+b)/2;const dv=av>0?Math.abs(a-b)/av:0;if(dv>maxDv)maxDv=dv;sumDv+=dv;}
+        const sc=Math.max(0,1-sumDv/pairs);
+        const lb=sc>=0.95?'symmetric':sc>=0.80?'likely symmetric':sc>=0.60?'weakly symmetric':'asymmetric';
+        L.push('','Symmetry analysis:','─'.repeat(56));
+        L.push(`  Score:            ${sc.toFixed(6)}`);
+        L.push(`  Label:            ${lb}`);
+        L.push(`  Max pair dev:     ${(maxDv*100).toFixed(1)}%`);
+        for(let i=0;i<pairs;i++){const a=widths[i],b=widths[n-1-i],av=(a+b)/2;const dv=av>0?Math.abs(a-b)/av*100:0;L.push(`  Pair ${i+1}–${n-i}:       ${a} px vs ${b} px  (dev ${dv.toFixed(1)}%)`);}
+        if(n%2===1)L.push(`  Center band:      Band ${Math.ceil(n/2)} (${widths[Math.floor(n/2)]} px)`);
+        if(sc>=0.60){
+          const sw=new Array(n);
+          for(let i=0;i<pairs;i++){const av=(widths[i]+widths[n-1-i])/2;sw[i]=av;sw[n-1-i]=av;}
+          if(n%2===1)sw[Math.floor(n/2)]=widths[Math.floor(n/2)];
+          const st=sw.reduce((s,v)=>s+v,0),sr=sw.map(v=>v/st);
+          L.push('','  Symmetric interpretation (mirrored avg):');
+          for(let i=0;i<n;i++)L.push(`    Band ${i+1}:  ${sw[i].toFixed(1)} px  ratio: ${sr[i].toFixed(6)}`);
+          L.push(`    Ratio sum:  ${sr.reduce((s,v)=>s+v,0).toFixed(6)}`);
+          L.push(`    Ratio vector: [${sr.map(r=>r.toFixed(6)).join(', ')}]`);
+        }
+      }
+
+      lastReportUser=L.join('\n');lastReportDebug=D.join('\n');
+      renderReport();reportWrap.classList.add('visible');
+
+      // Band visual
+      bandVisual.innerHTML='';
+      outRuns.forEach((r,i)=>{const s=document.createElement('div');s.className='band-swatch';s.style.flex=ratios[i];s.style.background=r.color;s.title=`Band ${i+1}: ${widths[i]}px`;bandVisual.appendChild(s);});
+      bandVisual.classList.add('visible');
+
+    }catch(err){errorMsg.textContent=err.message;errorMsg.classList.add('visible');}
+  });
+
+  // ── Report render ──
+  function renderReport(){
+    if(debugToggle.checked&&lastReportDebug){
+      const i=lastReportUser.indexOf('\nImage size:'),nl=lastReportUser.indexOf('\n',i+1);
+      const at=nl!==-1?nl:lastReportUser.length;
+      reportBox.textContent=lastReportUser.slice(0,at)+'\n'+lastReportDebug+lastReportUser.slice(at);
+    }else{reportBox.textContent=lastReportUser;}
+  }
+  debugToggle.addEventListener('change',renderReport);
+
+  // ── Copy ──
+  copyBtn.addEventListener('click',()=>{
+    const text=reportBox.textContent;
+    try{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);copyBtn.textContent='Copied!';setTimeout(()=>{copyBtn.textContent='Copy';},1500);}
+    catch(e){navigator.clipboard.writeText(text).then(()=>{copyBtn.textContent='Copied!';setTimeout(()=>{copyBtn.textContent='Copy';},1500);}).catch(()=>{copyBtn.textContent='Failed';setTimeout(()=>{copyBtn.textContent='Copy';},1500);});}
+  });
+})();
+</script>
+</body>
+</html>
