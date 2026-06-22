@@ -67,43 +67,45 @@ When you add a new category, you must update all of: the `works` entry, a
 `data-f` filter `<button>`, a `--c-<name>` variable in `:root`, and a
 `.cat-<name>` rule.
 
-## Special case: `work/glossary/index.html` (Claude Artifact fragment)
+## Special case: `work/glossary/index.html` (was a Claude Artifact)
 
-This page is the **exception to every convention below** — treat it differently
-from the other pages.
+This page differs from the others in origin and structure — read this before
+editing it.
 
-- **It is an HTML *fragment*, not a full document.** There is no `<!DOCTYPE>`,
-  `<html>`, `<head>`, or `<body>` — it begins with an `<h2 class="sr-only">`,
-  then a `<style>`, content `<div>`, and `<script>`. It was authored to run
-  **embedded inside a host runtime** (a Claude Artifact / claude.ai sandbox),
-  not as a standalone page.
-- **It depends on host-provided things that are NOT defined in the file:**
-  - **Design tokens** — CSS variables like `--color-background-primary`,
-    `--color-text-secondary`, `--color-border-tertiary`, `--font-mono`,
-    `--border-radius-lg`. These come from the host theme; standalone they are
-    undefined and the page renders mostly unstyled (but still functional).
-  - **Tabler Icons** — `<i class="ti ti-plus">`, `ti-download`, `ti-edit`,
-    `ti-trash`. The icon font is not loaded in-file, so icons won't show
-    standalone.
-  - **`window.storage`** — an async host key/value API (`window.storage.get` /
-    `.set` on key `bg_v2`), not `localStorage`. Calls are wrapped in
-    try/catch and **fall back gracefully** to the seed data, so the page still
-    works when the API is absent.
+- **Origin: a Claude Artifact.** It was authored to run embedded inside a host
+  runtime (a Claude Artifact / claude.ai sandbox), so it originally relied on
+  host-provided design tokens, an icon font, and an async `window.storage` API.
+  It has since been **converted to a standalone document** so it renders
+  correctly when served directly on GitHub Pages — but it keeps the artifact's
+  component CSS and data model.
+- **The host dependencies are now self-supplied** (do not reintroduce
+  `window.storage` or assume host tokens):
+  - **Design tokens** — the `--color-*`, `--font-mono`, and `--border-radius-*`
+    variables the component CSS uses are defined in a `:root` block in the head,
+    with a `@media(prefers-color-scheme:dark)` override. The page adapts to the
+    system light/dark theme; the category/confidence badges have hard-coded
+    light and dark palettes to match.
+  - **Tabler Icons** — loaded from a CDN (`@tabler/icons-webfont`) for the
+    `<i class="ti ti-*">` glyphs (plus/download/edit/trash). This is the one
+    page with an external runtime dependency. Toolbar buttons still have text
+    labels and the icon-only buttons have `aria-label`s, so it degrades
+    gracefully if the font fails.
+  - **Persistence** — uses `localStorage` (key `bg_v2`), wrapped in try/catch.
+    On first load (or any failure) it seeds from the `D` array.
+- **Structure note:** the head has **two `<style>` blocks** — the first holds
+  the standalone scaffolding (tokens, base element/form-control styling, layout,
+  `.sr-only`), the second is the artifact's original component CSS (`.badge`,
+  `.tcard`, `.chip`, etc.). Keep component styling in the second block.
 - **The glossary content is the `D` array** in the `<script>` (35 seed terms).
   To add or edit dictionary entries, edit `D`. Each entry shape:
   `{id, en, es:[...], cat, conf, den, des, een, ees, notes}` where `cat` is one
   of `ballroom|drag|slang|aave|latam|sensitive` and `conf` is `high|med|low`.
-  At runtime, saved edits live in `window.storage` and override `D`; `D` is only
-  the fallback seed.
+  At runtime, saved edits live in `localStorage` and override `D`; `D` is the
+  seed/fallback. (Note: edits made in the UI are per-visitor browser state, not
+  committed to the repo — to change what everyone sees, edit `D`.)
 - It is a **bilingual EN → Latin-American-Spanish reference** with per-term
   localization notes (regional variants, register, sensitivity flags). Preserve
   the Spanish content and tone when editing.
-- **Do not "fix" this page** by converting it to a full standalone document or
-  inlining the host runtime/tokens/icons unless explicitly asked — it is
-  intentionally a fragment. If asked to make it work standalone on GitHub Pages,
-  that is a deliberate change: wrap it in a full document, define the `--color-*`
-  / `--border-radius-*` / `--font-mono` tokens, load Tabler Icons, and replace
-  `window.storage` with `localStorage`.
 
 ## Conventions
 
