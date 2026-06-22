@@ -19,7 +19,7 @@ with all CSS and JavaScript inlined.
 ├── index.html                 # Homepage: hero + filterable "Selected work" grid
 └── work/                      # One self-contained subpage per project
     ├── sierpinski/index.html      # Interactive fractal exhibition (creative)
-    ├── glossary/index.html        # Bilingual ballroom/drag glossary (translation)
+    ├── glossary/index.html        # Bilingual ballroom/drag glossary (translation) — see note below
     ├── emerging-careers/index.html# AI/work careers intelligence ref (technology)
     ├── invoice-generator/index.html# Invoicing tool for translators (tools)
     └── band-caliper/index.html    # Color-band measurement tool (tools)
@@ -67,11 +67,50 @@ When you add a new category, you must update all of: the `works` entry, a
 `data-f` filter `<button>`, a `--c-<name>` variable in `:root`, and a
 `.cat-<name>` rule.
 
+## Special case: `work/glossary/index.html` (Claude Artifact fragment)
+
+This page is the **exception to every convention below** — treat it differently
+from the other pages.
+
+- **It is an HTML *fragment*, not a full document.** There is no `<!DOCTYPE>`,
+  `<html>`, `<head>`, or `<body>` — it begins with an `<h2 class="sr-only">`,
+  then a `<style>`, content `<div>`, and `<script>`. It was authored to run
+  **embedded inside a host runtime** (a Claude Artifact / claude.ai sandbox),
+  not as a standalone page.
+- **It depends on host-provided things that are NOT defined in the file:**
+  - **Design tokens** — CSS variables like `--color-background-primary`,
+    `--color-text-secondary`, `--color-border-tertiary`, `--font-mono`,
+    `--border-radius-lg`. These come from the host theme; standalone they are
+    undefined and the page renders mostly unstyled (but still functional).
+  - **Tabler Icons** — `<i class="ti ti-plus">`, `ti-download`, `ti-edit`,
+    `ti-trash`. The icon font is not loaded in-file, so icons won't show
+    standalone.
+  - **`window.storage`** — an async host key/value API (`window.storage.get` /
+    `.set` on key `bg_v2`), not `localStorage`. Calls are wrapped in
+    try/catch and **fall back gracefully** to the seed data, so the page still
+    works when the API is absent.
+- **The glossary content is the `D` array** in the `<script>` (35 seed terms).
+  To add or edit dictionary entries, edit `D`. Each entry shape:
+  `{id, en, es:[...], cat, conf, den, des, een, ees, notes}` where `cat` is one
+  of `ballroom|drag|slang|aave|latam|sensitive` and `conf` is `high|med|low`.
+  At runtime, saved edits live in `window.storage` and override `D`; `D` is only
+  the fallback seed.
+- It is a **bilingual EN → Latin-American-Spanish reference** with per-term
+  localization notes (regional variants, register, sensitivity flags). Preserve
+  the Spanish content and tone when editing.
+- **Do not "fix" this page** by converting it to a full standalone document or
+  inlining the host runtime/tokens/icons unless explicitly asked — it is
+  intentionally a fragment. If asked to make it work standalone on GitHub Pages,
+  that is a deliberate change: wrap it in a full document, define the `--color-*`
+  / `--border-radius-*` / `--font-mono` tokens, load Tabler Icons, and replace
+  `window.storage` with `localStorage`.
+
 ## Conventions
 
 - **Self-contained pages.** Keep each page's CSS in a `<style>` block and JS in
   a `<script>` block within the same file. No shared/external CSS or JS files,
   no bundler. Don't introduce a build step or dependencies without being asked.
+  (Exception: `work/glossary/index.html` — see the special-case section above.)
 - **Each page styles itself independently.** There is no global design system —
   every page defines its own `:root` CSS variables, fonts, and palette. The
   homepage and each `work/*` page have different aesthetics on purpose. Match the
