@@ -1,5 +1,55 @@
-
-<h2 class="sr-only">Glosario bilingüe de términos de la escena ballroom y drag, inglés a español latinoamericano</h2>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ballroom &amp; Drag Glossary — Carolina Conde</title>
+<meta name="description" content="Glosario bilingüe de términos de la escena ballroom y drag, inglés a español latinoamericano, con notas de localización.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<style>
+/* ── Design tokens (provided by the host runtime when embedded; defined here for
+      standalone use on GitHub Pages). Adapts to the system light/dark theme. ── */
+:root{
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f4f4f5;
+  --color-text-primary:#1a1a1a;
+  --color-text-secondary:#6b6b6b;
+  --color-border-primary:#1a1a1a;
+  --color-border-secondary:#cfcfcf;
+  --color-border-tertiary:#e6e6e6;
+  --border-radius-md:8px;
+  --border-radius-lg:12px;
+  --font-mono:'JetBrains Mono',ui-monospace,'Courier New',monospace;
+  --page-bg:#fafaf9;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --color-background-primary:#1c1c1f;
+    --color-background-secondary:#27272a;
+    --color-text-primary:#f4f4f5;
+    --color-text-secondary:#a1a1aa;
+    --color-border-primary:#e4e4e7;
+    --color-border-secondary:#52525b;
+    --color-border-tertiary:#3a3a3e;
+    --page-bg:#141416;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--page-bg);color:var(--color-text-primary);font-family:'DM Sans',system-ui,-apple-system,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding:32px 20px 64px}
+.page-head{margin-bottom:20px;padding-bottom:16px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.page-head h1{font-size:24px;font-weight:600;letter-spacing:-0.01em;margin:0 0 6px}
+.page-head p{font-size:14px;color:var(--color-text-secondary);margin:0;max-width:60ch}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+/* Base form controls — normally styled by the host runtime. */
+input,select,textarea,button{font-family:inherit;font-size:14px;color:var(--color-text-primary)}
+input[type=text],select,textarea{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 10px}
+input[type=text]:focus,select:focus,textarea:focus{outline:none;border-color:var(--color-border-primary)}
+button{background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:6px 12px;color:var(--color-text-primary);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+button:hover{border-color:var(--color-border-primary)}
+</style>
 <style>
 .badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;border:0.5px solid transparent}
 .cat-ballroom{background:#EEEDFE;color:#3C3489;border-color:#AFA9EC}
@@ -36,6 +86,14 @@
 .fc{grid-column:1/-1}
 .flg{color:#E24B4A;font-weight:500}
 </style>
+</head>
+<body>
+<div class="wrap">
+<h2 class="sr-only">Glosario bilingüe de términos de la escena ballroom y drag, inglés a español latinoamericano</h2>
+<header class="page-head">
+  <h1>Ballroom &amp; Drag Glossary</h1>
+  <p>Una referencia bilingüe viva de la cultura ballroom y la terminología drag — inglés a español latinoamericano, con notas de localización.</p>
+</header>
 
 <div style="padding-top:.5rem">
   <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
@@ -66,6 +124,7 @@
   </div>
 
   <div id="grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px"></div>
+</div>
 </div>
 
 <script>
@@ -111,11 +170,11 @@ const D=[
 
 let terms=[],activeCat='all',q='',editId=null,expId=null;
 
-async function init(){
-  try{const r=await window.storage.get('bg_v2');if(r&&r.value){const p=JSON.parse(r.value);if(Array.isArray(p)&&p.length>0){terms=p;}else{terms=[...D];}}}catch(e){terms=[...D];}
+function init(){
+  try{const raw=localStorage.getItem('bg_v2');const p=raw?JSON.parse(raw):null;terms=(Array.isArray(p)&&p.length>0)?p:[...D];}catch(e){terms=[...D];}
   renderCats();render();
 }
-async function save(){try{await window.storage.set('bg_v2',JSON.stringify(terms));}catch(e){}}
+function save(){try{localStorage.setItem('bg_v2',JSON.stringify(terms));}catch(e){}}
 
 function renderCats(){
   const el=document.getElementById('cats');
@@ -192,28 +251,30 @@ function openForm(id){
 }
 function cancelForm(){document.getElementById('aform').style.display='none';editId=null;}
 
-async function doSave(){
+function doSave(){
   const en=document.getElementById('fen').value.trim();
   const esR=document.getElementById('fes').value.trim();
   if(!en||!esR){alert('El término EN y equivalentes ES son obligatorios.');return;}
   const td={id:editId||Date.now().toString(),en,es:esR.split(',').map(s=>s.trim()).filter(Boolean),cat:document.getElementById('fcat').value,conf:document.getElementById('fconf').value,den:document.getElementById('fden').value.trim(),des:document.getElementById('fdes').value.trim(),een:document.getElementById('feen').value.trim(),ees:document.getElementById('fees').value.trim(),notes:document.getElementById('fnotes').value.trim()};
   if(editId){const i=terms.findIndex(x=>x.id===editId);if(i>=0)terms[i]=td;}else{terms.push(td);}
-  await save();cancelForm();renderCats();render();
+  save();cancelForm();renderCats();render();
 }
 
-async function delTerm(id){
+function delTerm(id){
   if(!confirm('¿Eliminar este término?'))return;
   terms=terms.filter(x=>x.id!==id);
-  await save();renderCats();render();
+  save();renderCats();render();
 }
 
 function doExport(){
   const h=['EN Term','ES Equivalents','Category','Confidence','Def EN','Def ES','Example EN','Example ES','Notes'];
   const rows=terms.map(t=>[t.en,t.es.join(' / '),CATS[t.cat]?.l||t.cat,CONF[t.conf]?.l||t.conf,t.den||'',t.des||'',t.een||'',t.ees||'',t.notes||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
   const csv=[h.join(','),...rows].join('\n');
-  const b=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const b=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
   const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='glosario_ballroom_drag.csv';a.click();URL.revokeObjectURL(u);
 }
 
 init();
 </script>
+</body>
+</html>
